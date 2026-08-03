@@ -1,0 +1,45 @@
+'use client';
+
+import { useFormState, useFormStatus } from 'react-dom';
+import { updateSettingsAction, type FormState } from '@/lib/actions/admin';
+
+const FIELDS: { key: string; label: string; hint?: string }[] = [
+  { key: 'site.tagline', label: 'Homepage tagline' },
+  { key: 'site.announcement', label: 'Announcement bar text' },
+  { key: 'trust.entriesToDate', label: 'Entries to date (display)' },
+  { key: 'trust.prizesGiven', label: 'Prizes given (display)' },
+  { key: 'trust.rating', label: 'Average rating (display)' },
+];
+
+function Btn() {
+  const { pending } = useFormStatus();
+  return (
+    <button type="submit" disabled={pending} className="btn-primary px-6 py-2.5">
+      {pending ? 'Saving…' : 'Save settings'}
+    </button>
+  );
+}
+
+export function SettingsForm({ values }: { values: Record<string, string> }) {
+  const [state, action] = useFormState<FormState, FormData>(updateSettingsAction, {});
+  return (
+    <form action={action} className="space-y-4 rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
+      {FIELDS.map((f) => (
+        <div key={f.key}>
+          <label className="label" htmlFor={f.key}>{f.label}</label>
+          <input
+            id={f.key}
+            name={`setting.${f.key}`}
+            defaultValue={values[f.key] ?? ''}
+            className="input"
+          />
+          {f.hint && <p className="mt-1 text-xs text-ink/50">{f.hint}</p>}
+        </div>
+      ))}
+      <div className="flex items-center gap-3">
+        <Btn />
+        {state.success && <span className="text-sm text-emerald-600">{state.success}</span>}
+      </div>
+    </form>
+  );
+}
