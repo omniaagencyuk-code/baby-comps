@@ -19,44 +19,51 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Premium family-focused brand palette
+        // Warm caramel/cream "premium baby" brand (from the approved design).
         brand: {
-          50: '#fdf2f8',
-          100: '#fce7f3',
-          200: '#fbcfe8',
-          300: '#f9a8d4',
-          400: '#f472b6',
-          500: '#ec4899',
-          600: '#db2777',
-          700: '#be185d',
-          800: '#9d174d',
-          900: '#831843',
+          50: '#fbf6ef',
+          100: '#f6e5d7',
+          200: '#f0d3b8',
+          300: '#e6b98c',
+          400: '#d59a5c',
+          500: '#a9772f',
+          600: '#825621', // primary
+          700: '#6f4612',
+          800: '#5a3810',
+          900: '#4b2b00',
         },
+        // Soft peach used for gentle background washes/accents.
         accent: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
+          50: '#fff1e7',
+          100: '#ffe6d2',
+          200: '#feddbe',
+          300: '#efcfb0',
+          400: '#e6b98c',
+          500: '#d59a5c',
+          600: '#a9772f',
+          700: '#6f4612',
         },
-        cream: '#fffaf5',
-        ink: '#1f2933',
+        // Material-style warm surfaces to match the design tokens.
+        cream: '#fff8f4',
+        sand: '#fbebde', // surface-container
+        'surface-variant': '#f2dfcf',
+        'outline-warm': '#c0afa0',
+        secondaryink: '#735b42', // secondary text/headings
+        muted: '#6a5d50', // on-surface-variant
+        ink: '#3b3026', // on-surface
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         display: ['var(--font-display)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
-        xl: '1rem',
-        '2xl': '1.25rem',
+        xl: '0.75rem',
+        '2xl': '1.5rem', // 24px cards to match the design
         '3xl': '1.75rem',
       },
       boxShadow: {
-        card: '0 4px 24px -8px rgba(190, 24, 93, 0.12)',
-        'card-hover': '0 12px 40px -12px rgba(190, 24, 93, 0.24)',
+        card: '0 4px 20px -6px rgba(130, 86, 33, 0.12)',
+        'card-hover': '0 12px 34px -10px rgba(130, 86, 33, 0.22)',
       },
       keyframes: {
         'fade-up': {

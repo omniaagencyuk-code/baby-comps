@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Countdown } from '@/components/competition/countdown';
 import { ProgressBar } from '@/components/competition/progress-bar';
 import { EntryForm } from '@/components/competition/entry-form';
+import { TrustSignals } from '@/components/competition/trust-signals';
 import { SaveButton } from '@/components/competition/save-button';
 import { CompetitionGrid } from '@/components/competition/competition-grid';
 import { prisma } from '@/lib/prisma';
@@ -193,6 +194,8 @@ export default async function CompetitionDetailPage({ params }: { params: { slug
               isAuthenticated={Boolean(session)}
               isOpen={isOpen}
             />
+
+            <TrustSignals />
           </div>
         </div>
       </div>

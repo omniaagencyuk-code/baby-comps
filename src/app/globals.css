@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-display: 'Poppins', system-ui, sans-serif;
+  --font-sans: 'Be Vietnam Pro', system-ui, sans-serif;
+  --font-display: 'Manrope', system-ui, sans-serif;
 }
 
 @layer base {
@@ -36,20 +36,21 @@
     @apply btn text-ink hover:bg-black/5;
   }
   .card {
-    @apply rounded-2xl border border-black/5 bg-white shadow-card;
+    @apply rounded-2xl border border-surface-variant bg-white shadow-card;
   }
   .container-tight {
     @apply mx-auto w-full max-w-5xl px-4 sm:px-6;
   }
   .label {
-    @apply mb-1.5 block text-sm font-medium text-ink/80;
+    @apply mb-1.5 block text-sm font-medium text-muted;
   }
   .input {
-    @apply w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-ink
-      shadow-sm outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100;
+    @apply w-full rounded-xl border border-outline-warm/60 bg-white px-4 py-2.5 text-ink
+      shadow-sm outline-none transition placeholder:text-muted/50 focus:border-brand-400
+      focus:ring-2 focus:ring-brand-100;
   }
   .prose-content p {
-    @apply mb-4 leading-relaxed text-ink/80;
+    @apply mb-4 leading-relaxed text-muted;
   }
 }
 

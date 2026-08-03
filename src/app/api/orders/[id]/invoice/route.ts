@@ -41,13 +41,13 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 <style>
   * { font-family: -apple-system, Segoe UI, Roboto, sans-serif; color: #1f2933; }
   body { max-width: 720px; margin: 40px auto; padding: 0 24px; }
-  h1 { color: #be185d; margin: 0; }
+  h1 { color: #825621; margin: 0; }
   .muted { color: #6b7280; font-size: 14px; }
   table { width: 100%; border-collapse: collapse; margin-top: 24px; }
   th, td { padding: 8px 4px; border-bottom: 1px solid #eee; font-size: 14px; }
   th { text-align: left; color: #6b7280; }
   .totals td { border: none; }
-  .print-btn { margin-top: 24px; padding: 10px 18px; background: #db2777; color: #fff;
+  .print-btn { margin-top: 24px; padding: 10px 18px; background: #825621; color: #fff;
     border: none; border-radius: 999px; font-weight: 600; cursor: pointer; }
   @media print { .print-btn { display: none; } }
 </style>

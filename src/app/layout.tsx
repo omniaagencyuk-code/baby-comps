@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Poppins } from 'next/font/google';
+import { Be_Vietnam_Pro, Manrope } from 'next/font/google';
 import './globals.css';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SiteFooter } from '@/components/layout/site-footer';
@@ -7,8 +7,13 @@ import { siteConfig } from '@/lib/site';
 import { getSession } from '@/lib/auth';
 import { getSetting } from '@/lib/settings';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const poppins = Poppins({
+const beVietnam = Be_Vietnam_Pro({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+const manrope = Manrope({
   subsets: ['latin'],
   weight: ['500', '600', '700'],
   variable: '--font-display',
@@ -37,7 +42,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#db2777',
+  themeColor: '#825621',
   width: 'device-width',
   initialScale: 1,
 };
@@ -67,7 +72,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     },
   };
   return (
-    <html lang="en-GB" className={`${inter.variable} ${poppins.variable}`}>
+    <html lang="en-GB" className={`${beVietnam.variable} ${manrope.variable}`}>
       <body className="flex min-h-screen flex-col">
         <script
           type="application/ld+json"
