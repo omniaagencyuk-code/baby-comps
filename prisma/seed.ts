@@ -26,7 +26,7 @@ async function main() {
   console.log('🌱 Seeding Tiny Treasure Competitions...');
 
   // ---- Admin + demo customer -------------------------------------
-  const adminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@tinytreasure.co.uk';
+  const adminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@tinytreasurecompetitions.com';
   const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'ChangeMe123!';
   const adminHash = await bcrypt.hash(adminPassword, 12);
 
@@ -44,10 +44,10 @@ async function main() {
 
   const customerHash = await bcrypt.hash('Password123!', 12);
   const customer = await prisma.user.upsert({
-    where: { email: 'demo@tinytreasure.co.uk' },
+    where: { email: 'demo@tinytreasurecompetitions.com' },
     update: {},
     create: {
-      email: 'demo@tinytreasure.co.uk',
+      email: 'demo@tinytreasurecompetitions.com',
       passwordHash: customerHash,
       name: 'Demo Customer',
       role: 'USER',

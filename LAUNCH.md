@@ -34,6 +34,13 @@ Work top to bottom; the admin dashboard shows a live "Launch readiness" panel an
 - [ ] Subscribe it to: `checkout.session.completed`,
       `checkout.session.expired`, `charge.refunded`.
 - [ ] Put the endpoint's signing secret in `STRIPE_WEBHOOK_SECRET`.
+- [ ] Enable your payment methods in **Stripe Dashboard → Settings → Payment
+      methods**: **Cards**, **Apple Pay**, **Google Pay** and **Pay by Bank**
+      (UK open banking). Apple Pay / Google Pay appear automatically at checkout
+      on supported devices — Stripe *provides* these methods; no separate
+      integration is needed.
+- [ ] For Apple Pay, verify your domain in Stripe (Dashboard → Payment methods →
+      Apple Pay → add `tinytreasurecompetitions.com`).
 - [ ] Do a real end-to-end test purchase, confirm tickets are allocated and the
       order shows **PAID** in the admin.
 - [ ] Test a refund from the admin order page and confirm entries are cancelled.

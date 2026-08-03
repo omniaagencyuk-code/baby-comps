@@ -102,8 +102,8 @@ npm run dev            # http://localhost:3000
 
 | Role     | Email                        | Password        |
 | -------- | ---------------------------- | --------------- |
-| Admin    | `admin@tinytreasure.co.uk`   | `ChangeMe123!`  |
-| Customer | `demo@tinytreasure.co.uk`    | `Password123!`  |
+| Admin    | `admin@tinytreasurecompetitions.com`   | `ChangeMe123!`  |
+| Customer | `demo@tinytreasurecompetitions.com`    | `Password123!`  |
 
 > The admin credentials come from `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`.
 

@@ -6,7 +6,7 @@ export const siteConfig = {
     'Win premium baby and family prizes for a fraction of their retail value. Trusted UK baby competitions with guaranteed draws and published winners.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   locale: 'en_GB',
-  contactEmail: 'hello@tinytreasure.co.uk',
+  contactEmail: 'hello@tinytreasurecompetitions.com',
   social: {
     instagram: 'https://instagram.com/tinytreasurecomps',
     facebook: 'https://facebook.com/tinytreasurecomps',
