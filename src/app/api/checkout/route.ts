@@ -105,6 +105,10 @@ export async function POST(req: Request) {
       userId: session.userId,
       quantity: String(quantity),
     },
+    // Auto-expire the session after 60 minutes if unpaid. Stripe then fires
+    // `checkout.session.expired`, which cancels the still-pending order — so
+    // abandoned checkouts clean themselves up with no manual approval.
+    expires_at: Math.floor(Date.now() / 1000) + 60 * 60,
     success_url: `${siteConfig.url}/checkout/success?order=${order.id}`,
     cancel_url: `${siteConfig.url}/competitions/${comp.slug}?cancelled=1`,
   });

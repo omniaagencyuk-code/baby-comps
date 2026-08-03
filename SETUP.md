@@ -87,7 +87,8 @@ stripe listen --forward-to localhost:3000/api/webhooks/stripe
    ```
 7. Configure the **Stripe webhook** in the Stripe Dashboard:
    - Endpoint URL: `https://YOUR_DOMAIN/api/webhooks/stripe`
-   - Events: `checkout.session.completed`, `charge.refunded`
+   - Events: `checkout.session.completed`, `checkout.session.expired`,
+     `charge.refunded`
    - Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
 
 ---

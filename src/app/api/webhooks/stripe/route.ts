@@ -45,6 +45,20 @@ export async function POST(req: Request) {
         break;
       }
 
+      case 'checkout.session.expired': {
+        // Customer abandoned checkout. Cancel the still-pending order so it
+        // doesn't linger. No tickets exist (they're only created on payment).
+        const session = event.data.object as Stripe.Checkout.Session;
+        const orderId = session.metadata?.orderId;
+        if (orderId) {
+          await prisma.order.updateMany({
+            where: { id: orderId, status: 'PENDING' },
+            data: { status: 'CANCELLED' },
+          });
+        }
+        break;
+      }
+
       case 'charge.refunded': {
         const charge = event.data.object as Stripe.Charge;
         const pi = typeof charge.payment_intent === 'string' ? charge.payment_intent : undefined;
