@@ -1,4 +1,5 @@
 import type { IconItem } from '@/lib/content';
+import { CmsIcon } from '@/components/ui/icon';
 
 export function HowItWorks({ steps }: { steps: IconItem[] }) {
   return (
@@ -13,11 +14,13 @@ export function HowItWorks({ steps }: { steps: IconItem[] }) {
         <ol className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s, i) => (
             <li key={s.title} className="relative rounded-2xl bg-cream p-6 text-center">
-              <span className="absolute right-4 top-4 text-sm font-bold text-brand-200">
+              <span className="absolute right-4 top-4 text-sm font-bold text-brand-300">
                 0{i + 1}
               </span>
-              <div className="mb-3 text-4xl">{s.icon}</div>
-              <h3 className="mb-1.5 font-semibold">{s.title}</h3>
+              <div className="mb-3 grid h-14 w-14 mx-auto place-items-center rounded-full bg-brand-100 text-brand-600">
+                <CmsIcon value={s.icon} className="text-3xl [&.material-symbols-outlined]:text-[30px]" />
+              </div>
+              <h3 className="mb-1.5 font-semibold text-secondaryink">{s.title}</h3>
               <p className="text-sm text-ink/60">{s.text}</p>
             </li>
           ))}

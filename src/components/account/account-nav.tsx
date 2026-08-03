@@ -3,14 +3,15 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { logoutAction } from '@/lib/actions/auth';
+import { Icon } from '@/components/ui/icon';
 
 const links = [
-  { href: '/account', label: 'Overview', icon: '🏠' },
-  { href: '/account/entries', label: 'My entries', icon: '🎫' },
-  { href: '/account/orders', label: 'Orders', icon: '🧾' },
-  { href: '/account/wins', label: 'My wins', icon: '🏆' },
-  { href: '/account/saved', label: 'Saved', icon: '❤️' },
-  { href: '/account/profile', label: 'Profile', icon: '⚙️' },
+  { href: '/account', label: 'Overview', icon: 'grid_view' },
+  { href: '/account/entries', label: 'My entries', icon: 'confirmation_number' },
+  { href: '/account/orders', label: 'Orders', icon: 'receipt_long' },
+  { href: '/account/wins', label: 'My wins', icon: 'emoji_events' },
+  { href: '/account/saved', label: 'Saved', icon: 'favorite' },
+  { href: '/account/profile', label: 'Profile', icon: 'settings' },
 ];
 
 export function AccountNav() {
@@ -27,7 +28,7 @@ export function AccountNav() {
               active ? 'bg-brand-600 text-white' : 'text-ink/70 hover:bg-brand-50'
             }`}
           >
-            <span aria-hidden>{l.icon}</span>
+            <Icon name={l.icon} className="text-[20px]" />
             {l.label}
           </Link>
         );
@@ -37,7 +38,7 @@ export function AccountNav() {
           type="submit"
           className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-ink/70 transition hover:bg-red-50 hover:text-red-600"
         >
-          <span aria-hidden>↩️</span> Log out
+          <Icon name="logout" className="text-[20px]" /> Log out
         </button>
       </form>
     </nav>

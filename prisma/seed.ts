@@ -428,10 +428,10 @@ async function main() {
       label: 'Trust badges',
       data: {
         items: [
-          { icon: '🔒', title: 'Secure payments', text: 'Powered by Stripe' },
-          { icon: '✅', title: 'Verifiable draws', text: 'Fair & transparent' },
-          { icon: '🚚', title: 'Free UK delivery', text: 'On all physical prizes' },
-          { icon: '🇬🇧', title: 'UK based', text: 'Real family business' },
+          { icon: 'lock', title: 'Secure payments', text: 'Powered by Stripe' },
+          { icon: 'verified', title: 'Verifiable draws', text: 'Fair & transparent' },
+          { icon: 'local_shipping', title: 'Free UK delivery', text: 'On all physical prizes' },
+          { icon: 'family_restroom', title: 'UK based', text: 'Real family business' },
         ],
       },
     },
@@ -440,10 +440,10 @@ async function main() {
       label: 'How it works steps',
       data: {
         items: [
-          { icon: '🎁', title: 'Pick a prize', text: 'Browse our premium competitions and choose your favourite.' },
-          { icon: '🧠', title: 'Answer & enter', text: 'Answer a simple skill question and choose how many entries.' },
-          { icon: '💳', title: 'Pay securely', text: 'Checkout safely with Stripe. Tickets allocated instantly.' },
-          { icon: '🏆', title: 'Watch the draw', text: 'We draw on the published date and publish the winner.' },
+          { icon: 'redeem', title: 'Pick a prize', text: 'Browse our premium competitions and choose your favourite.' },
+          { icon: 'quiz', title: 'Answer & enter', text: 'Answer a simple skill question and choose how many entries.' },
+          { icon: 'credit_card', title: 'Pay securely', text: 'Checkout safely with Stripe. Tickets allocated instantly.' },
+          { icon: 'emoji_events', title: 'Watch the draw', text: 'We draw on the published date and publish the winner.' },
         ],
       },
     },

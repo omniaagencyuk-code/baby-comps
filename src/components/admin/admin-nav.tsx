@@ -2,36 +2,37 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Icon } from '@/components/ui/icon';
 
 const groups = [
   {
     title: 'Sell',
     links: [
-      { href: '/admin', label: 'Dashboard', icon: '📊' },
-      { href: '/admin/competitions', label: 'Competitions', icon: '🎁' },
-      { href: '/admin/categories', label: 'Categories', icon: '🗂️' },
-      { href: '/admin/orders', label: 'Orders', icon: '🧾' },
-      { href: '/admin/customers', label: 'Customers', icon: '👥' },
-      { href: '/admin/winners', label: 'Winners', icon: '🏆' },
+      { href: '/admin', label: 'Dashboard', icon: 'dashboard' },
+      { href: '/admin/competitions', label: 'Competitions', icon: 'redeem' },
+      { href: '/admin/categories', label: 'Categories', icon: 'category' },
+      { href: '/admin/orders', label: 'Orders', icon: 'receipt_long' },
+      { href: '/admin/customers', label: 'Customers', icon: 'group' },
+      { href: '/admin/winners', label: 'Winners', icon: 'emoji_events' },
     ],
   },
   {
     title: 'Content',
     links: [
-      { href: '/admin/content', label: 'Homepage', icon: '🏡' },
-      { href: '/admin/pages', label: 'Pages', icon: '📄' },
-      { href: '/admin/blog', label: 'Blog', icon: '✍️' },
-      { href: '/admin/media', label: 'Media', icon: '🖼️' },
-      { href: '/admin/coupons', label: 'Coupons', icon: '🏷️' },
+      { href: '/admin/content', label: 'Homepage', icon: 'home' },
+      { href: '/admin/pages', label: 'Pages', icon: 'description' },
+      { href: '/admin/blog', label: 'Blog', icon: 'edit_note' },
+      { href: '/admin/media', label: 'Media', icon: 'image' },
+      { href: '/admin/coupons', label: 'Coupons', icon: 'sell' },
     ],
   },
   {
     title: 'System',
     links: [
-      { href: '/admin/email', label: 'Email', icon: '✉️' },
-      { href: '/admin/reports', label: 'Reports', icon: '📈' },
-      { href: '/admin/seo', label: 'SEO', icon: '🔍' },
-      { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
+      { href: '/admin/email', label: 'Email', icon: 'mail' },
+      { href: '/admin/reports', label: 'Reports', icon: 'monitoring' },
+      { href: '/admin/seo', label: 'SEO', icon: 'search' },
+      { href: '/admin/settings', label: 'Settings', icon: 'settings' },
     ],
   },
 ];
@@ -56,7 +57,7 @@ export function AdminNav() {
                     active ? 'bg-white/15 font-semibold text-white' : 'text-white/70 hover:bg-white/10'
                   }`}
                 >
-                  <span aria-hidden>{l.icon}</span>
+                  <Icon name={l.icon} className="text-[20px]" />
                   {l.label}
                 </Link>
               );

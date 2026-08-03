@@ -73,6 +73,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   };
   return (
     <html lang="en-GB" className={`${beVietnam.variable} ${manrope.variable}`}>
+      <head>
+        {/* Material Symbols icon font. Loaded once for the whole app. */}
+        {/* display=block avoids flashing the ligature text; correct for icon fonts. */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font, @next/next/google-font-display */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+        />
+      </head>
       <body className="flex min-h-screen flex-col">
         <script
           type="application/ld+json"

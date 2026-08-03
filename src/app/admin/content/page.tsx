@@ -38,14 +38,14 @@ export default async function AdminContentPage() {
       <IconBlockForm
         action={updateIconBlockAction.bind(null, 'home.trustBadges', 'Trust badges')}
         title="Trust badges"
-        hint="One per line, formatted as: icon | title | text"
+        hint="One per line: icon | title | text. Icon can be an emoji or a Material Symbols name (e.g. local_shipping)."
         items={trust}
       />
 
       <IconBlockForm
         action={updateIconBlockAction.bind(null, 'home.howItWorks', 'How it works steps')}
         title="How it works"
-        hint="One per line, formatted as: icon | title | text"
+        hint="One per line: icon | title | text. Icon can be an emoji or a Material Symbols name (e.g. local_shipping)."
         items={steps}
       />
 

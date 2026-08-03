@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { listCompetitions, getCategories, type ListParams } from '@/lib/competitions';
 import { CompetitionGrid } from '@/components/competition/competition-grid';
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { Icon } from '@/components/ui/icon';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,20 +24,21 @@ const sortOptions = [
 export default async function CompetitionsPage({
   searchParams,
 }: {
-  searchParams: { sort?: string; category?: string; page?: string };
+  searchParams: { sort?: string; category?: string; page?: string; q?: string };
 }) {
   const sort = (searchParams.sort as ListParams['sort']) || 'ending';
   const category = searchParams.category;
+  const query = searchParams.q?.trim() || undefined;
   const page = Number(searchParams.page) || 1;
 
   const [{ items, total, pages }, categories] = await Promise.all([
-    listCompetitions({ sort, category, page }),
+    listCompetitions({ sort, category, query, page }),
     getCategories(),
   ]);
 
   const buildQuery = (overrides: Record<string, string | undefined>) => {
     const params = new URLSearchParams();
-    const merged = { sort, category, ...overrides };
+    const merged = { sort, category, q: query, ...overrides };
     for (const [k, v] of Object.entries(merged)) if (v) params.set(k, v);
     const qs = params.toString();
     return qs ? `/competitions?${qs}` : '/competitions';
@@ -46,10 +48,40 @@ export default async function CompetitionsPage({
     <div className="container py-8">
       <Breadcrumbs items={[{ label: 'Competitions' }]} />
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Live competitions</h1>
-        <p className="mt-2 text-ink/60">{total} competitions open for entry right now.</p>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-secondaryink">Live competitions</h1>
+          <p className="mt-2 text-muted">
+            {query
+              ? `${total} result${total === 1 ? '' : 's'} for “${query}”`
+              : `${total} competitions open for entry right now.`}
+          </p>
+        </div>
+        {/* Search */}
+        <form action="/competitions" method="get" className="relative w-full sm:w-72">
+          {sort && <input type="hidden" name="sort" value={sort} />}
+          {category && <input type="hidden" name="category" value={category} />}
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted">
+            <Icon name="search" className="text-[20px]" />
+          </span>
+          <input
+            type="search"
+            name="q"
+            defaultValue={query ?? ''}
+            placeholder="Search prizes…"
+            aria-label="Search competitions"
+            className="input pl-10"
+          />
+        </form>
       </div>
+
+      {query && (
+        <div className="mb-4">
+          <Link href={buildQuery({ q: undefined, page: undefined })} className="text-sm text-brand-700 hover:underline">
+            ← Clear search
+          </Link>
+        </div>
+      )}
 
       {/* Category filter */}
       <div className="mb-6 flex flex-wrap gap-2">

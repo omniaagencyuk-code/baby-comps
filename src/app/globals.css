@@ -19,6 +19,31 @@
   }
 }
 
+/* Material Symbols icon font */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1.25em;
+  line-height: 1;
+  display: inline-flex;
+  vertical-align: middle;
+  white-space: nowrap;
+  direction: ltr;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+.material-symbols-outlined.ms-fill {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
 @layer components {
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold
@@ -36,7 +61,7 @@
     @apply btn text-ink hover:bg-black/5;
   }
   .card {
-    @apply rounded-2xl border border-surface-variant bg-white shadow-card;
+    @apply rounded-2xl border border-surface-variant bg-[#fffdf9] shadow-card;
   }
   .container-tight {
     @apply mx-auto w-full max-w-5xl px-4 sm:px-6;

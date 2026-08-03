@@ -282,6 +282,47 @@ export async function drawWinnerAction(competitionId: string): Promise<void> {
   revalidatePath('/winners');
 }
 
+/** Manually create a winner for a competition (no random draw). */
+export async function createWinnerManualAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+  const competitionId = String(formData.get('competitionId') || '');
+  const name = String(formData.get('name') || '').trim();
+  if (!competitionId || !name) return { error: 'Competition and winner name are required.' };
+
+  const comp = await prisma.competition.findUnique({
+    where: { id: competitionId },
+    include: { winner: true },
+  });
+  if (!comp) return { error: 'Competition not found.' };
+  if (comp.winner) return { error: 'This competition already has a winner.' };
+
+  const ticketRaw = Number(formData.get('ticketNumber'));
+
+  await prisma.$transaction([
+    prisma.winner.create({
+      data: {
+        competitionId,
+        name,
+        location: String(formData.get('location') || '') || null,
+        ticketNumber: ticketRaw > 0 ? Math.floor(ticketRaw) : null,
+        prizeTitle: comp.title,
+        image: String(formData.get('image') || '') || comp.heroImage,
+        quote: String(formData.get('quote') || '') || null,
+        published: formData.get('published') === 'on',
+      },
+    }),
+    prisma.competition.update({ where: { id: competitionId }, data: { status: 'DRAWN' } }),
+  ]);
+
+  await logAudit('winner.manual', 'Competition', competitionId);
+  revalidatePath('/admin/winners');
+  revalidatePath('/winners');
+  return { success: `Winner added for “${comp.title}”.` };
+}
+
 export async function updateWinnerAction(
   id: string,
   _prev: FormState,

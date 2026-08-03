@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Icon } from '@/components/ui/icon';
 
 export function SaveButton({
   competitionId,
@@ -53,7 +54,7 @@ export function SaveButton({
           : 'border-black/10 bg-white text-ink/70 hover:border-brand-200 hover:text-brand-600'
       }`}
     >
-      <span className={saved ? 'scale-110 transition' : 'transition'}>{saved ? '❤️' : '🤍'}</span>
+      <Icon name="favorite" filled={saved} className={`text-[18px] ${saved ? 'text-brand-600' : ''}`} />
       {saved ? 'Saved' : 'Save'}
     </button>
   );

@@ -53,6 +53,7 @@ export async function getNewCompetitions(take = 4) {
 export interface ListParams {
   sort?: 'ending' | 'new' | 'price-low' | 'price-high' | 'value';
   category?: string;
+  query?: string;
   page?: number;
   perPage?: number;
 }
@@ -60,12 +61,23 @@ export interface ListParams {
 export async function listCompetitions({
   sort = 'ending',
   category,
+  query,
   page = 1,
   perPage = 12,
 }: ListParams) {
+  const q = query?.trim();
   const where: Prisma.CompetitionWhereInput = {
     ...liveWhere,
     ...(category ? { category: { slug: category } } : {}),
+    ...(q
+      ? {
+          OR: [
+            { title: { contains: q, mode: 'insensitive' } },
+            { subtitle: { contains: q, mode: 'insensitive' } },
+            { description: { contains: q, mode: 'insensitive' } },
+          ],
+        }
+      : {}),
   };
 
   const orderBy: Prisma.CompetitionOrderByWithRelationInput =

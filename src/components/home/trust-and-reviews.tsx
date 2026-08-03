@@ -1,4 +1,5 @@
 import type { IconItem } from '@/lib/content';
+import { CmsIcon } from '@/components/ui/icon';
 
 export interface ReviewItem {
   id: string;
@@ -14,10 +15,12 @@ export function TrustBadges({ badges }: { badges: IconItem[] }) {
       <div className="container grid grid-cols-2 gap-6 sm:grid-cols-4">
         {badges.map((b) => (
           <div key={b.title} className="flex items-center gap-3">
-            <span className="text-3xl">{b.icon}</span>
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand-100 text-brand-600">
+              <CmsIcon value={b.icon} className="text-2xl [&.material-symbols-outlined]:text-[24px]" />
+            </span>
             <div>
-              <p className="text-sm font-semibold">{b.title}</p>
-              <p className="text-xs text-ink/60">{b.text}</p>
+              <p className="text-sm font-semibold text-secondaryink">{b.title}</p>
+              <p className="text-xs text-muted">{b.text}</p>
             </div>
           </div>
         ))}

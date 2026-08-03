@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { formatMoney, formatDate } from '@/lib/utils';
 import { AdminPageHeader, AdminCard } from '@/components/admin/ui';
@@ -43,8 +44,12 @@ export default async function AdminOrdersPage() {
                 </tr>
               )}
               {orders.map((o) => (
-                <tr key={o.id} className="border-b border-black/5 last:border-0">
-                  <td className="p-4 font-mono text-xs">{o.orderNumber}</td>
+                <tr key={o.id} className="border-b border-black/5 last:border-0 hover:bg-brand-50/40">
+                  <td className="p-4 font-mono text-xs">
+                    <Link href={`/admin/orders/${o.id}`} className="text-brand-700 hover:underline">
+                      {o.orderNumber}
+                    </Link>
+                  </td>
                   <td className="p-4">{o.user.name || o.user.email}</td>
                   <td className="p-4 text-ink/60">
                     {o.items.reduce((sum, i) => sum + i.quantity, 0)} entries

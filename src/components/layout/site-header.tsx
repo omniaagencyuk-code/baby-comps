@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { siteConfig } from '@/lib/site';
 import type { SessionPayload } from '@/lib/auth';
 import { MobileNav } from './mobile-nav';
+import { Icon } from '@/components/ui/icon';
 
 export function SiteHeader({
   session,
@@ -38,6 +39,13 @@ export function SiteHeader({
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <Link
+            href="/competitions"
+            aria-label="Search competitions"
+            className="grid h-9 w-9 place-items-center rounded-full text-muted transition hover:bg-brand-50 hover:text-brand-600"
+          >
+            <Icon name="search" className="text-[22px]" />
+          </Link>
           {session ? (
             <>
               {session.role === 'ADMIN' && (

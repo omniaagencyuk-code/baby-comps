@@ -19,7 +19,7 @@ export function SectionHeading({
             {eyebrow}
           </p>
         )}
-        <h2 className="text-2xl font-bold sm:text-3xl">{title}</h2>
+        <h2 className="text-2xl font-bold text-secondaryink sm:text-3xl">{title}</h2>
         {description && <p className="mt-2 text-ink/70">{description}</p>}
       </div>
       {action && (

@@ -4,13 +4,14 @@ import { AdminPageHeader, AdminCard } from '@/components/admin/ui';
 import { Badge } from '@/components/ui/badge';
 import { ConfirmSubmit } from '@/components/admin/confirm-submit';
 import { WinnerEditForm } from '@/components/admin/winner-edit-form';
+import { ManualWinnerForm } from '@/components/admin/manual-winner-form';
 import { drawWinnerAction, updateWinnerAction } from '@/lib/actions/admin';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminWinnersPage() {
   const now = new Date();
-  const [readyToDraw, winners] = await Promise.all([
+  const [readyToDraw, winners, awaitingWinner] = await Promise.all([
     prisma.competition.findMany({
       where: { status: { in: ['PUBLISHED', 'CLOSED'] }, closingDate: { lt: now }, winner: null },
       orderBy: { closingDate: 'asc' },
@@ -19,11 +20,21 @@ export default async function AdminWinnersPage() {
       orderBy: { drawnAt: 'desc' },
       include: { competition: { select: { title: true } } },
     }),
+    prisma.competition.findMany({
+      where: { isTemplate: false, winner: null },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true, title: true },
+    }),
   ]);
 
   return (
     <div className="space-y-8">
       <AdminPageHeader title="Winners" description="Draw winners and manage the winners gallery." />
+
+      <section>
+        <h2 className="mb-3 font-semibold">Add a winner manually</h2>
+        <ManualWinnerForm competitions={awaitingWinner} />
+      </section>
 
       <section>
         <h2 className="mb-3 font-semibold">Ready to draw ({readyToDraw.length})</h2>
