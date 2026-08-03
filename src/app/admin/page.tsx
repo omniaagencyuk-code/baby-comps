@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { formatMoney, formatDate, soldPercent } from '@/lib/utils';
 import { AdminPageHeader, StatCard, AdminCard } from '@/components/admin/ui';
+import { productionReadiness, stripeMode } from '@/lib/env';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,9 +27,34 @@ export default async function AdminDashboard() {
       }),
     ]);
 
+  const readiness = productionReadiness();
+
   return (
     <div>
       <AdminPageHeader title="Dashboard" description="Overview of your competition platform." />
+
+      {readiness.length > 0 && (
+        <AdminCard className="mb-6 border-amber-200 bg-amber-50 p-5">
+          <div className="flex items-start gap-3">
+            <span className="text-xl">🚦</span>
+            <div>
+              <h2 className="font-semibold text-amber-900">Launch readiness</h2>
+              <p className="text-sm text-amber-800">
+                Resolve these before going live (payments are currently in{' '}
+                <strong>{stripeMode()}</strong> mode):
+              </p>
+              <ul className="mt-2 list-disc space-y-0.5 pl-5 text-sm text-amber-800">
+                {readiness.map((r) => (
+                  <li key={r}>{r}</li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs text-amber-700">
+                See <code className="rounded bg-amber-100 px-1">/api/health</code> and LAUNCH.md.
+              </p>
+            </div>
+          </div>
+        </AdminCard>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Revenue (paid)" value={formatMoney(revenue._sum.total ?? 0)} />

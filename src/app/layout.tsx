@@ -6,6 +6,7 @@ import { SiteFooter } from '@/components/layout/site-footer';
 import { siteConfig } from '@/lib/site';
 import { getSession } from '@/lib/auth';
 import { getSetting } from '@/lib/settings';
+import { stripeMode } from '@/lib/env';
 
 const beVietnam = Be_Vietnam_Pro({
   subsets: ['latin'],
@@ -87,6 +88,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify([orgJsonLd, siteJsonLd]) }}
         />
+        {stripeMode() !== 'live' && (
+          <div className="bg-amber-500 px-4 py-1.5 text-center text-xs font-semibold text-white">
+            ⚠️ Test mode — payments are not live.{' '}
+            {stripeMode() === 'unset' ? 'Stripe is not configured (demo checkout).' : 'Using Stripe test keys.'}
+          </div>
+        )}
         <SiteHeader session={session} announcement={announcement} />
         <main className="flex-1">{children}</main>
         <SiteFooter />

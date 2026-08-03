@@ -159,7 +159,10 @@ src/
   lib/                 # prisma, auth, stripe, orders, queries, validation
 ```
 
-For deployment instructions, see [`SETUP.md`](./SETUP.md).
+For deployment instructions, see [`SETUP.md`](./SETUP.md). Before going live,
+work through the [`LAUNCH.md`](./LAUNCH.md) checklist — the admin dashboard also
+shows a live launch-readiness panel and `/api/health` reports configuration and
+database status.
 
 ---
 

@@ -1,14 +1,18 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import { hashPassword, verifyPassword } from '@/lib/password';
 import { setSessionCookie, clearSessionCookie } from '@/lib/auth';
 import { registerSchema, loginSchema } from '@/lib/validation';
+import { limitByIp } from '@/lib/rate-limit';
 
 export interface AuthState {
   error?: string;
 }
+
+const TOO_MANY = 'Too many attempts. Please wait a minute and try again.';
 
 function safeNext(next: FormDataEntryValue | null): string {
   const value = typeof next === 'string' ? next : '';
@@ -17,6 +21,9 @@ function safeNext(next: FormDataEntryValue | null): string {
 }
 
 export async function registerAction(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  if (!limitByIp(headers(), 'register', { limit: 10, windowMs: 60_000 }).success) {
+    return { error: TOO_MANY };
+  }
   const parsed = registerSchema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
@@ -47,6 +54,9 @@ export async function registerAction(_prev: AuthState, formData: FormData): Prom
 }
 
 export async function loginAction(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  if (!limitByIp(headers(), 'login', { limit: 10, windowMs: 60_000 }).success) {
+    return { error: TOO_MANY };
+  }
   const parsed = loginSchema.safeParse({
     email: formData.get('email'),
     password: formData.get('password'),

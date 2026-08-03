@@ -1,11 +1,17 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { limitByIp } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
 /** Toggle a saved competition for the current user. */
 export async function POST(req: Request) {
+  const limit = limitByIp(req.headers, 'saved', { limit: 40, windowMs: 60_000 });
+  if (!limit.success) {
+    return NextResponse.json({ error: 'Too many requests.', saved: false }, { status: 429 });
+  }
+
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: 'auth', saved: false }, { status: 401 });

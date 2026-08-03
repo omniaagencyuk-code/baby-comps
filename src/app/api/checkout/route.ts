@@ -5,8 +5,14 @@ import { checkoutSchema } from '@/lib/validation';
 import { quotePrice, createPendingOrder, resolveCoupon, fulfillOrder } from '@/lib/orders';
 import { getStripe, isStripeConfigured } from '@/lib/stripe';
 import { siteConfig } from '@/lib/site';
+import { limitByIp } from '@/lib/rate-limit';
 
 export async function POST(req: Request) {
+  const limit = limitByIp(req.headers, 'checkout', { limit: 20, windowMs: 60_000 });
+  if (!limit.success) {
+    return NextResponse.json({ error: 'Too many attempts. Please slow down.' }, { status: 429 });
+  }
+
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: 'Please log in to enter.' }, { status: 401 });
