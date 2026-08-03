@@ -18,7 +18,7 @@ export function CouponForm() {
     <form action={action} className="flex flex-wrap items-end gap-3 rounded-2xl border border-black/5 bg-white p-5 shadow-sm">
       <div>
         <label className="label" htmlFor="code">Code</label>
-        <input id="code" name="code" placeholder="WELCOME10" required className="input uppercase" />
+        <input id="code" name="code" placeholder="WELCOME10" required className="input w-36 uppercase" />
       </div>
       <div>
         <label className="label" htmlFor="type">Type</label>
@@ -29,7 +29,19 @@ export function CouponForm() {
       </div>
       <div>
         <label className="label" htmlFor="value">Value</label>
-        <input id="value" name="value" type="number" step="0.01" min="0" required className="input w-28" />
+        <input id="value" name="value" type="number" step="0.01" min="0" required className="input w-24" />
+      </div>
+      <div>
+        <label className="label" htmlFor="minSpend">Min spend £</label>
+        <input id="minSpend" name="minSpend" type="number" step="0.01" min="0" placeholder="—" className="input w-24" />
+      </div>
+      <div>
+        <label className="label" htmlFor="maxRedemptions">Max uses</label>
+        <input id="maxRedemptions" name="maxRedemptions" type="number" min="0" placeholder="∞" className="input w-24" />
+      </div>
+      <div>
+        <label className="label" htmlFor="expiresAt">Expires</label>
+        <input id="expiresAt" name="expiresAt" type="date" className="input" />
       </div>
       <Btn />
       {state.error && <p className="w-full text-sm text-red-600">{state.error}</p>}

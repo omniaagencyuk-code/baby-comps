@@ -18,6 +18,8 @@ const cardSelect = {
 
 const liveWhere: Prisma.CompetitionWhereInput = {
   status: 'PUBLISHED',
+  archived: false,
+  isTemplate: false,
   closingDate: { gt: new Date() },
 };
 

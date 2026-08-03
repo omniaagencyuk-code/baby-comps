@@ -17,6 +17,8 @@ const groups = [
   {
     title: 'Content',
     links: [
+      { href: '/admin/content', label: 'Homepage', icon: '🏡' },
+      { href: '/admin/pages', label: 'Pages', icon: '📄' },
       { href: '/admin/blog', label: 'Blog', icon: '✍️' },
       { href: '/admin/media', label: 'Media', icon: '🖼️' },
       { href: '/admin/coupons', label: 'Coupons', icon: '🏷️' },

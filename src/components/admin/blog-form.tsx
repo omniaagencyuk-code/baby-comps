@@ -3,6 +3,7 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import type { FormState } from '@/lib/actions/admin';
+import { ImageField } from './image-field';
 
 function SubmitBtn() {
   const { pending } = useFormStatus();
@@ -46,10 +47,7 @@ export function BlogForm({
         <label className="label" htmlFor="excerpt">Excerpt</label>
         <input id="excerpt" name="excerpt" defaultValue={values.excerpt} className="input" />
       </div>
-      <div>
-        <label className="label" htmlFor="coverImage">Cover image URL</label>
-        <input id="coverImage" name="coverImage" defaultValue={values.coverImage} className="input" />
-      </div>
+      <ImageField name="coverImage" label="Cover image" defaultValue={values.coverImage} folder="blog" />
       <div>
         <label className="label" htmlFor="content">Content *</label>
         <textarea id="content" name="content" defaultValue={values.content} rows={12} required className="input resize-y" />

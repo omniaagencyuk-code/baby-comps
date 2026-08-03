@@ -111,6 +111,130 @@ export async function deleteCompetitionAction(id: string): Promise<void> {
   revalidatePath('/admin/competitions');
 }
 
+async function uniqueSlug(base: string): Promise<string> {
+  let slug = base;
+  let n = 2;
+  while (await prisma.competition.findUnique({ where: { slug } })) {
+    slug = `${base}-${n++}`;
+  }
+  return slug;
+}
+
+/** Clone a competition (or template) into a fresh DRAFT with zeroed sales. */
+export async function duplicateCompetitionAction(id: string): Promise<void> {
+  await requireAdmin();
+  const src = await prisma.competition.findUnique({ where: { id } });
+  if (!src) return;
+  const slug = await uniqueSlug(`${slugify(src.title)}-copy`);
+
+  const created = await prisma.competition.create({
+    data: {
+      slug,
+      title: `${src.title} (copy)`,
+      subtitle: src.subtitle,
+      description: src.description,
+      terms: src.terms,
+      heroImage: src.heroImage,
+      images: src.images,
+      retailValue: src.retailValue,
+      ticketPrice: src.ticketPrice,
+      maxEntries: src.maxEntries,
+      maxPerUser: src.maxPerUser,
+      drawDate: src.drawDate,
+      closingDate: src.closingDate,
+      skillQuestion: src.skillQuestion,
+      answerOptions: src.answerOptions,
+      correctAnswer: src.correctAnswer,
+      status: 'DRAFT',
+      featured: false,
+      archived: false,
+      isTemplate: false,
+      entriesSold: 0,
+      metaTitle: src.metaTitle,
+      metaDescription: src.metaDescription,
+      categoryId: src.categoryId,
+    },
+  });
+  await logAudit('competition.duplicate', 'Competition', created.id, { from: id });
+  revalidatePath('/admin/competitions');
+  redirect(`/admin/competitions/${created.id}`);
+}
+
+/** Instantiate a NEW draft competition from a template. */
+export async function useTemplateAction(id: string): Promise<void> {
+  await requireAdmin();
+  const tpl = await prisma.competition.findUnique({ where: { id } });
+  if (!tpl || !tpl.isTemplate) return;
+  const slug = await uniqueSlug(slugify(tpl.title));
+  const created = await prisma.competition.create({
+    data: {
+      slug,
+      title: tpl.title,
+      subtitle: tpl.subtitle,
+      description: tpl.description,
+      terms: tpl.terms,
+      heroImage: tpl.heroImage,
+      images: tpl.images,
+      retailValue: tpl.retailValue,
+      ticketPrice: tpl.ticketPrice,
+      maxEntries: tpl.maxEntries,
+      maxPerUser: tpl.maxPerUser,
+      drawDate: tpl.drawDate,
+      closingDate: tpl.closingDate,
+      skillQuestion: tpl.skillQuestion,
+      answerOptions: tpl.answerOptions,
+      correctAnswer: tpl.correctAnswer,
+      status: 'DRAFT',
+      isTemplate: false,
+      categoryId: tpl.categoryId,
+    },
+  });
+  await logAudit('competition.fromTemplate', 'Competition', created.id, { template: id });
+  revalidatePath('/admin/competitions');
+  redirect(`/admin/competitions/${created.id}`);
+}
+
+/** Turn a competition into a reusable template (clones it as a template). */
+export async function saveAsTemplateAction(id: string): Promise<void> {
+  await requireAdmin();
+  const src = await prisma.competition.findUnique({ where: { id } });
+  if (!src) return;
+  const slug = await uniqueSlug(`tpl-${slugify(src.title)}`);
+  await prisma.competition.create({
+    data: {
+      slug,
+      title: src.title,
+      subtitle: src.subtitle,
+      description: src.description,
+      terms: src.terms,
+      heroImage: src.heroImage,
+      images: src.images,
+      retailValue: src.retailValue,
+      ticketPrice: src.ticketPrice,
+      maxEntries: src.maxEntries,
+      maxPerUser: src.maxPerUser,
+      drawDate: src.drawDate,
+      closingDate: src.closingDate,
+      skillQuestion: src.skillQuestion,
+      answerOptions: src.answerOptions,
+      correctAnswer: src.correctAnswer,
+      status: 'DRAFT',
+      isTemplate: true,
+      categoryId: src.categoryId,
+    },
+  });
+  await logAudit('competition.saveAsTemplate', 'Competition', id);
+  revalidatePath('/admin/competitions');
+  redirect('/admin/competitions?view=templates');
+}
+
+export async function setArchivedAction(id: string, archived: boolean): Promise<void> {
+  await requireAdmin();
+  await prisma.competition.update({ where: { id }, data: { archived } });
+  await logAudit(archived ? 'competition.archive' : 'competition.restore', 'Competition', id);
+  revalidatePath('/admin/competitions');
+}
+
 // ---- Winners ------------------------------------------------------
 
 export async function drawWinnerAction(competitionId: string): Promise<void> {
@@ -229,14 +353,167 @@ export async function createCouponAction(_prev: FormState, formData: FormData): 
   const type = formData.get('type') === 'FIXED' ? 'FIXED' : 'PERCENT';
   const rawValue = Number(formData.get('value')) || 0;
   const value = type === 'FIXED' ? Math.round(rawValue * 100) : rawValue;
+  const minSpendRaw = Number(formData.get('minSpend'));
+  const maxRedemptionsRaw = Number(formData.get('maxRedemptions'));
+  const expiresRaw = String(formData.get('expiresAt') || '');
 
   try {
-    await prisma.coupon.create({ data: { code, type, value, active: true } });
+    await prisma.coupon.create({
+      data: {
+        code,
+        type,
+        value,
+        active: true,
+        minSpend: minSpendRaw > 0 ? Math.round(minSpendRaw * 100) : null,
+        maxRedemptions: maxRedemptionsRaw > 0 ? Math.floor(maxRedemptionsRaw) : null,
+        expiresAt: expiresRaw ? new Date(expiresRaw) : null,
+      },
+    });
   } catch {
     return { error: 'A coupon with that code already exists.' };
   }
   revalidatePath('/admin/coupons');
   return { success: `Coupon ${code} created.` };
+}
+
+export async function toggleCouponAction(id: string, active: boolean): Promise<void> {
+  await requireAdmin();
+  await prisma.coupon.update({ where: { id }, data: { active } });
+  revalidatePath('/admin/coupons');
+}
+
+export async function deleteCouponAction(id: string): Promise<void> {
+  await requireAdmin();
+  await prisma.coupon.delete({ where: { id } });
+  revalidatePath('/admin/coupons');
+}
+
+// ---- Homepage content blocks --------------------------------------
+
+export async function updateHeroAction(_prev: FormState, formData: FormData): Promise<FormState> {
+  await requireAdmin();
+  const get = (k: string) => String(formData.get(k) || '');
+  const data = {
+    badge: get('badge'),
+    titleLead: get('titleLead'),
+    titleHighlight: get('titleHighlight'),
+    titleTail: get('titleTail'),
+    subtitle: get('subtitle'),
+    primaryCtaLabel: get('primaryCtaLabel'),
+    primaryCtaHref: get('primaryCtaHref'),
+    secondaryCtaLabel: get('secondaryCtaLabel'),
+    secondaryCtaHref: get('secondaryCtaHref'),
+    image: get('image'),
+    winnerCaption: get('winnerCaption'),
+  };
+  await prisma.contentBlock.upsert({
+    where: { key: 'home.hero' },
+    update: { data },
+    create: { key: 'home.hero', label: 'Homepage hero', data },
+  });
+  revalidatePath('/');
+  revalidatePath('/admin/content');
+  return { success: 'Hero updated.' };
+}
+
+/** Parse a textarea of "icon | title | text" lines into an items block. */
+export async function updateIconBlockAction(
+  key: string,
+  label: string,
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+  const raw = String(formData.get('items') || '');
+  const items = raw
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [icon, title, text] = line.split('|').map((s) => s.trim());
+      return { icon: icon || '⭐', title: title || '', text: text || '' };
+    })
+    .filter((i) => i.title);
+
+  await prisma.contentBlock.upsert({
+    where: { key },
+    update: { data: { items } },
+    create: { key, label, data: { items } },
+  });
+  revalidatePath('/');
+  revalidatePath('/admin/content');
+  return { success: 'Section updated.' };
+}
+
+// ---- Reviews ------------------------------------------------------
+
+export async function createReviewAction(_prev: FormState, formData: FormData): Promise<FormState> {
+  await requireAdmin();
+  const name = String(formData.get('name') || '').trim();
+  const quote = String(formData.get('quote') || '').trim();
+  if (!name || !quote) return { error: 'Name and quote are required.' };
+  await prisma.review.create({
+    data: {
+      name,
+      quote,
+      location: String(formData.get('location') || '') || null,
+      rating: Math.max(1, Math.min(5, Number(formData.get('rating')) || 5)),
+      published: true,
+    },
+  });
+  revalidatePath('/');
+  revalidatePath('/admin/content');
+  return { success: 'Review added.' };
+}
+
+export async function toggleReviewAction(id: string, published: boolean): Promise<void> {
+  await requireAdmin();
+  await prisma.review.update({ where: { id }, data: { published } });
+  revalidatePath('/');
+  revalidatePath('/admin/content');
+}
+
+export async function deleteReviewAction(id: string): Promise<void> {
+  await requireAdmin();
+  await prisma.review.delete({ where: { id } });
+  revalidatePath('/');
+  revalidatePath('/admin/content');
+}
+
+// ---- CMS pages ----------------------------------------------------
+
+export async function savePageAction(
+  id: string | null,
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+  const title = String(formData.get('title') || '').trim();
+  const content = String(formData.get('content') || '').trim();
+  if (!title || !content) return { error: 'Title and content are required.' };
+  const slug = slugify(String(formData.get('slug') || '') || title);
+  const data = {
+    title,
+    slug,
+    content,
+    metaTitle: String(formData.get('metaTitle') || '') || null,
+    metaDescription: String(formData.get('metaDescription') || '') || null,
+    published: formData.get('published') === 'on',
+  };
+  try {
+    if (id) await prisma.page.update({ where: { id }, data });
+    else await prisma.page.create({ data });
+  } catch {
+    return { error: 'Could not save — is the slug unique?' };
+  }
+  revalidatePath(`/${slug}`);
+  redirect('/admin/pages');
+}
+
+export async function deletePageAction(id: string): Promise<void> {
+  await requireAdmin();
+  await prisma.page.delete({ where: { id } });
+  revalidatePath('/admin/pages');
 }
 
 // ---- Settings -----------------------------------------------------

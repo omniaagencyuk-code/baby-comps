@@ -369,6 +369,202 @@ async function main() {
   }
   console.log(`   ✔ ${Object.keys(settings).length} site settings`);
 
+  // ---- Reviews (homepage testimonials) ---------------------------
+  const reviews = [
+    {
+      name: 'Hannah T.',
+      location: 'Leeds',
+      quote:
+        'Won a full nursery set for my second baby. The whole process was so easy and delivery was quick!',
+      rating: 5,
+      order: 1,
+    },
+    {
+      name: 'Priya K.',
+      location: 'Birmingham',
+      quote:
+        'Love that they publish every winner. Feels genuinely trustworthy compared to other sites.',
+      rating: 5,
+      order: 2,
+    },
+    {
+      name: 'James & Leah',
+      location: 'Bristol',
+      quote:
+        'Cheaper than buying a travel system outright and we actually won one. Over the moon!',
+      rating: 5,
+      order: 3,
+    },
+  ];
+  for (const r of reviews) {
+    const existing = await prisma.review.findFirst({ where: { name: r.name, quote: r.quote } });
+    if (!existing) await prisma.review.create({ data: r });
+  }
+  console.log(`   ✔ ${reviews.length} reviews`);
+
+  // ---- Content blocks (homepage sections) ------------------------
+  const blocks: { key: string; label: string; data: unknown }[] = [
+    {
+      key: 'home.hero',
+      label: 'Homepage hero',
+      data: {
+        badge: '⭐ Rated {rating}/5 by families',
+        titleLead: 'Win premium',
+        titleHighlight: 'baby & family',
+        titleTail: 'prizes',
+        subtitle:
+          'Enter beautiful prize competitions for a fraction of retail value. Fair, verifiable draws and every winner published. Your little treasure deserves the best.',
+        primaryCtaLabel: 'Browse competitions',
+        primaryCtaHref: '/competitions',
+        secondaryCtaLabel: 'See our winners',
+        secondaryCtaHref: '/winners',
+        image:
+          'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=900&q=80',
+        winnerCaption: 'Sophie from Manchester 🎉',
+      },
+    },
+    {
+      key: 'home.trustBadges',
+      label: 'Trust badges',
+      data: {
+        items: [
+          { icon: '🔒', title: 'Secure payments', text: 'Powered by Stripe' },
+          { icon: '✅', title: 'Verifiable draws', text: 'Fair & transparent' },
+          { icon: '🚚', title: 'Free UK delivery', text: 'On all physical prizes' },
+          { icon: '🇬🇧', title: 'UK based', text: 'Real family business' },
+        ],
+      },
+    },
+    {
+      key: 'home.howItWorks',
+      label: 'How it works steps',
+      data: {
+        items: [
+          { icon: '🎁', title: 'Pick a prize', text: 'Browse our premium competitions and choose your favourite.' },
+          { icon: '🧠', title: 'Answer & enter', text: 'Answer a simple skill question and choose how many entries.' },
+          { icon: '💳', title: 'Pay securely', text: 'Checkout safely with Stripe. Tickets allocated instantly.' },
+          { icon: '🏆', title: 'Watch the draw', text: 'We draw on the published date and publish the winner.' },
+        ],
+      },
+    },
+  ];
+  for (const b of blocks) {
+    await prisma.contentBlock.upsert({
+      where: { key: b.key },
+      update: { label: b.label, data: b.data as never },
+      create: { key: b.key, label: b.label, data: b.data as never },
+    });
+  }
+  console.log(`   ✔ ${blocks.length} content blocks`);
+
+  // ---- CMS content pages -----------------------------------------
+  const pages = [
+    {
+      slug: 'about',
+      title: 'About Us',
+      metaTitle: 'About Us',
+      metaDescription:
+        'Tiny Treasure Competitions is a UK family business giving away premium baby and family prizes through fair, verifiable draws.',
+      content: `## We help families win the things they love
+
+Tiny Treasure Competitions was founded by parents who wanted a fairer, friendlier way to win premium baby and family prizes. We hand-pick every prize, run transparent draws, and publish each and every winner — because trust is everything.
+
+## Our promise
+
+We operate our competitions in line with UK law. Every paid entry includes a genuine skill question, and a free postal entry route is always available. Draws take place on the published date using a verifiable random method.
+
+## Play responsibly
+
+Competitions should always be fun. Please only spend what you can comfortably afford. If you ever feel your play is becoming a problem, support is available at BeGambleAware.org.`,
+    },
+    {
+      slug: 'terms',
+      title: 'Terms & Conditions',
+      metaTitle: 'Terms & Conditions',
+      metaDescription: 'The terms and conditions for entering Tiny Treasure Competitions.',
+      content: `These terms govern your use of Tiny Treasure Competitions. By entering any competition you agree to these terms in full.
+
+## 1. Eligibility
+
+Entrants must be 18 years or over and resident in the United Kingdom.
+
+## 2. How to enter
+
+Each competition requires the correct answer to a skill-based question. Paid entries are made through our secure Stripe checkout. Ticket numbers are allocated automatically once payment is confirmed.
+
+## 3. Free postal entry route
+
+No purchase is necessary. You may enter for free by post. Send your name, address, email, telephone number, the competition you wish to enter and your answer to the skill question to our registered postal address. One entry per stamped envelope.
+
+## 4. Closing dates and draws
+
+Each competition has a published closing date and draw date. Winners are drawn from all valid entries using a verifiable random selection method.
+
+## 5. Winners and prizes
+
+Winners are notified within 7 days of the draw and published on our Winners page (first name and region only). Physical prizes are delivered free of charge to a UK address.
+
+## 6. Refunds
+
+Entries are non-refundable once a competition has closed, except where a competition is cancelled, in which case all entrants are refunded in full.
+
+## 7. Governing law
+
+These terms are governed by the laws of England and Wales.`,
+    },
+    {
+      slug: 'privacy',
+      title: 'Privacy Policy',
+      metaTitle: 'Privacy Policy',
+      metaDescription:
+        'How Tiny Treasure Competitions collects, uses and protects your personal data.',
+      content: `This policy explains how we collect, use and protect your personal data in accordance with the UK GDPR and the Data Protection Act 2018.
+
+## Data we collect
+
+Account details, order details, contact details for prize delivery, and technical data such as IP address.
+
+## How we use your data
+
+To administer competitions, process payments securely via Stripe, send marketing emails where you have opted in, and comply with our legal obligations.
+
+## Payment data
+
+Card payments are processed by Stripe. We never store your full card details on our servers.
+
+## Your rights
+
+You have the right to access, correct, or erase your personal data, and to withdraw consent to marketing at any time.`,
+    },
+    {
+      slug: 'responsible-play',
+      title: 'Responsible Play',
+      metaTitle: 'Responsible Play',
+      metaDescription: 'Our commitment to keeping competitions fun, fair and within your means.',
+      content: `Competitions should always be fun. We are committed to promoting responsible play.
+
+## Our commitments
+
+We only allow entrants aged 18 and over, display clear pricing and odds on every competition, and never encourage you to spend more than you can afford.
+
+## Tips for staying in control
+
+Set yourself a budget and stick to it. Treat entry fees as the cost of entertainment. Take a break if it stops being fun.
+
+## Getting support
+
+Free and confidential help is available from BeGambleAware (begambleaware.org) and GamCare (gamcare.org.uk), or call the National Gambling Helpline on 0808 8020 133.`,
+    },
+  ];
+  for (const p of pages) {
+    await prisma.page.upsert({
+      where: { slug: p.slug },
+      update: p,
+      create: { ...p, published: true },
+    });
+  }
+  console.log(`   ✔ ${pages.length} content pages`);
+
   console.log('✅ Seed complete.');
 }
 

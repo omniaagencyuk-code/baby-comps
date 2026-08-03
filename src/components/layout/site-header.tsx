@@ -3,12 +3,20 @@ import { siteConfig } from '@/lib/site';
 import type { SessionPayload } from '@/lib/auth';
 import { MobileNav } from './mobile-nav';
 
-export function SiteHeader({ session }: { session: SessionPayload | null }) {
+export function SiteHeader({
+  session,
+  announcement,
+}: {
+  session: SessionPayload | null;
+  announcement?: string;
+}) {
   return (
     <header className="sticky top-0 z-40 border-b border-black/5 bg-cream/90 backdrop-blur">
-      <div className="bg-brand-600 py-1.5 text-center text-xs font-medium text-white">
-        Free UK delivery on all physical prizes · Trusted, verifiable draws
-      </div>
+      {announcement && (
+        <div className="bg-brand-600 py-1.5 text-center text-xs font-medium text-white">
+          {announcement}
+        </div>
+      )}
       <div className="container flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold">
           <span aria-hidden className="text-2xl">🧸</span>

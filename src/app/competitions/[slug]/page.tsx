@@ -8,7 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Countdown } from '@/components/competition/countdown';
 import { ProgressBar } from '@/components/competition/progress-bar';
 import { EntryForm } from '@/components/competition/entry-form';
+import { SaveButton } from '@/components/competition/save-button';
 import { CompetitionGrid } from '@/components/competition/competition-grid';
+import { prisma } from '@/lib/prisma';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SectionHeading } from '@/components/ui/section-heading';
 
@@ -41,9 +43,14 @@ export default async function CompetitionDetailPage({ params }: { params: { slug
     getSession(),
   ]);
 
-  if (!comp || comp.status === 'DRAFT') notFound();
+  if (!comp || comp.status === 'DRAFT' || comp.archived || comp.isTemplate) notFound();
 
   const related = await getRelatedCompetitions(comp.id, comp.categoryId);
+  const savedRecord = session
+    ? await prisma.savedCompetition.findUnique({
+        where: { userId_competitionId: { userId: session.userId, competitionId: comp.id } },
+      })
+    : null;
   const isOpen = comp.status === 'PUBLISHED' && comp.closingDate > new Date();
   const pct = soldPercent(comp.entriesSold, comp.maxEntries);
   const gallery = comp.images.length ? comp.images : comp.heroImage ? [comp.heroImage] : [];
@@ -129,6 +136,13 @@ export default async function CompetitionDetailPage({ params }: { params: { slug
               </div>
               <h1 className="font-display text-3xl font-bold leading-tight">{comp.title}</h1>
               {comp.subtitle && <p className="mt-2 text-lg text-ink/70">{comp.subtitle}</p>}
+              <div className="mt-3">
+                <SaveButton
+                  competitionId={comp.id}
+                  initialSaved={Boolean(savedRecord)}
+                  isAuthenticated={Boolean(session)}
+                />
+              </div>
             </div>
 
             <div className="card space-y-4 p-5">

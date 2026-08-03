@@ -3,6 +3,7 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import type { FormState } from '@/lib/actions/admin';
+import { ImageField } from './image-field';
 
 interface Category {
   id: string;
@@ -83,8 +84,13 @@ export function CompetitionForm({
             </select>
           </div>
           <div className="sm:col-span-2">
-            <label className="label" htmlFor="heroImage">Hero image URL</label>
-            <input id="heroImage" name="heroImage" defaultValue={values.heroImage} placeholder="https://…" className="input" />
+            <ImageField
+              name="heroImage"
+              label="Hero image"
+              defaultValue={values.heroImage}
+              folder="competitions"
+              hint="Shown on cards and the competition page."
+            />
           </div>
           <div className="sm:col-span-2">
             <label className="label" htmlFor="description">Description *</label>

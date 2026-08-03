@@ -101,8 +101,10 @@ stripe listen --forward-to localhost:3000/api/webhooks/stripe
       legal advice, including your real postal-entry address.
 - [ ] Connect an email provider (Resend/Postmark/SendGrid) for transactional
       email.
-- [ ] Connect an image uploader (Vercel Blob/Cloudinary/UploadThing) for the
-      Media module.
+- [ ] Media uploads work out of the box locally (saved to `public/uploads`).
+      For Vercel (read-only filesystem), swap `saveUpload`/`deleteUpload` in
+      `src/lib/storage.ts` for Vercel Blob / Cloudinary / UploadThing — it's the
+      single integration point.
 - [ ] Set up analytics and monitoring.
 
 ---

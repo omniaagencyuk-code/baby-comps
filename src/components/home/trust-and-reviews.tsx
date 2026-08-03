@@ -1,29 +1,14 @@
-const badges = [
-  { icon: '🔒', title: 'Secure payments', text: 'Powered by Stripe' },
-  { icon: '✅', title: 'Verifiable draws', text: 'Fair & transparent' },
-  { icon: '🚚', title: 'Free UK delivery', text: 'On all physical prizes' },
-  { icon: '🇬🇧', title: 'UK based', text: 'Real family business' },
-];
+import type { IconItem } from '@/lib/content';
 
-const reviews = [
-  {
-    name: 'Hannah T.',
-    text: 'Won a full nursery set for my second baby. The whole process was so easy and the delivery was quick!',
-    rating: 5,
-  },
-  {
-    name: 'Priya K.',
-    text: 'Love that they publish every winner. Feels genuinely trustworthy compared to other sites.',
-    rating: 5,
-  },
-  {
-    name: 'James & Leah',
-    text: 'Cheaper than buying a travel system outright and we actually won one. Over the moon!',
-    rating: 5,
-  },
-];
+export interface ReviewItem {
+  id: string;
+  name: string;
+  location?: string | null;
+  quote: string;
+  rating: number;
+}
 
-export function TrustBadges() {
+export function TrustBadges({ badges }: { badges: IconItem[] }) {
   return (
     <section className="border-y border-black/5 bg-white py-8">
       <div className="container grid grid-cols-2 gap-6 sm:grid-cols-4">
@@ -41,7 +26,8 @@ export function TrustBadges() {
   );
 }
 
-export function Reviews() {
+export function Reviews({ reviews }: { reviews: ReviewItem[] }) {
+  if (reviews.length === 0) return null;
   return (
     <section className="py-16">
       <div className="container">
@@ -53,12 +39,15 @@ export function Reviews() {
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {reviews.map((r) => (
-            <figure key={r.name} className="card p-6">
+            <figure key={r.id} className="card p-6">
               <div className="mb-3 text-amber-400" aria-label={`${r.rating} out of 5 stars`}>
-                {'★'.repeat(r.rating)}
+                {'★'.repeat(Math.max(0, Math.min(5, r.rating)))}
               </div>
-              <blockquote className="text-ink/80">“{r.text}”</blockquote>
-              <figcaption className="mt-4 text-sm font-semibold">— {r.name}</figcaption>
+              <blockquote className="text-ink/80">“{r.quote}”</blockquote>
+              <figcaption className="mt-4 text-sm font-semibold">
+                — {r.name}
+                {r.location ? `, ${r.location}` : ''}
+              </figcaption>
             </figure>
           ))}
         </div>

@@ -43,3 +43,7 @@ prisma/dev.db-journal
 # IDE
 .idea
 .vscode
+
+# Uploaded media (kept out of git; storage swaps to a cloud provider in prod)
+/public/uploads/*
+!/public/uploads/.gitkeep

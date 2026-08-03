@@ -14,18 +14,32 @@ import {
 import { getSettings } from '@/lib/settings';
 import { getLatestPosts } from '@/lib/blog';
 import { BlogCardRow } from '@/components/blog/blog-card';
+import {
+  getBlock,
+  getIconItems,
+  getPublishedReviews,
+  DEFAULT_HERO,
+  DEFAULT_TRUST,
+  DEFAULT_STEPS,
+  type HeroContent,
+} from '@/lib/content';
 
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const [featured, endingSoon, newest, winners, settings, posts] = await Promise.all([
-    getFeaturedCompetitions(3),
-    getEndingSoon(4),
-    getNewCompetitions(3),
-    getPublishedWinners(5),
-    getSettings(),
-    getLatestPosts(3),
-  ]);
+  const [featured, endingSoon, newest, winners, settings, posts, hero, trust, steps, reviews] =
+    await Promise.all([
+      getFeaturedCompetitions(3),
+      getEndingSoon(4),
+      getNewCompetitions(3),
+      getPublishedWinners(5),
+      getSettings(),
+      getLatestPosts(3),
+      getBlock<HeroContent>('home.hero', DEFAULT_HERO),
+      getIconItems('home.trustBadges', DEFAULT_TRUST),
+      getIconItems('home.howItWorks', DEFAULT_STEPS),
+      getPublishedReviews(3),
+    ]);
 
   const stats = {
     entries: settings['trust.entriesToDate'] || '120,000+',
@@ -35,8 +49,8 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero stats={stats} />
-      <TrustBadges />
+      <Hero content={hero} stats={stats} />
+      <TrustBadges badges={trust} />
 
       <section className="py-16">
         <div className="container">
@@ -62,7 +76,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <HowItWorks />
+      <HowItWorks steps={steps} />
 
       <WinnerShowcase winners={winners} />
 
@@ -78,7 +92,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <Reviews />
+      <Reviews reviews={reviews} />
 
       {posts.length > 0 && (
         <section className="bg-white py-16">

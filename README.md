@@ -35,11 +35,20 @@ from any existing competition website.
 - View entries + ticket numbers, orders, downloadable invoices, wins, saved
   competitions, and manage profile / delivery details
 
-**Admin CMS** (`/admin`, admin role only)
+**Admin CMS** (`/admin`, admin role only) — manage the whole site without code
 
-- Dashboard, Competitions (full CRUD editor — every field editable, no code),
-  Orders, Customers, Winners (random draw + publish), Blog editor, Coupons,
-  Media, Email, Reports, SEO and Settings
+- **Dashboard** with live revenue/orders/entries stats
+- **Competitions**: full CRUD editor (every field editable) plus **duplicate**,
+  **archive/restore** and reusable **templates** (save-as-template + create-from-template)
+- **Media library** with drag-and-drop **image uploads**, reused via a picker in
+  every image field (competitions, blog, winners, hero)
+- **Homepage content** editor: hero, trust badges, how-it-works steps and reviews
+  are all CMS-driven (no hardcoded content)
+- **Content pages** (About, Terms, Privacy, Responsible Play + custom pages)
+  edited as Markdown
+- **Orders, Customers, Winners** (random draw + edit + publish), **Blog** editor,
+  **Coupons** (create, min-spend, expiry, usage caps, enable/disable, delete),
+  **Reports**, **SEO** health, **Email** overview and **Settings**
 
 **Stripe**
 
@@ -136,7 +145,8 @@ fulfils the order immediately so you can test the full entry → ticket-allocati
 
 ```
 prisma/
-  schema.prisma        # 14 models (User, Competition, Entry, Order, …)
+  schema.prisma        # 17 models (User, Competition, Entry, Order, Review,
+                       #   ContentBlock, Page, Media, …)
   seed.ts              # demo data
 src/
   app/                 # App Router pages & API routes

@@ -5,6 +5,7 @@ import { SiteHeader } from '@/components/layout/site-header';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { siteConfig } from '@/lib/site';
 import { getSession } from '@/lib/auth';
+import { getSetting } from '@/lib/settings';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
 const poppins = Poppins({
@@ -42,7 +43,10 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = await getSession();
+  const [session, announcement] = await Promise.all([
+    getSession(),
+    getSetting('site.announcement', 'Free UK delivery on all physical prizes · Trusted, verifiable draws'),
+  ]);
   const orgJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -69,7 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify([orgJsonLd, siteJsonLd]) }}
         />
-        <SiteHeader session={session} />
+        <SiteHeader session={session} announcement={announcement} />
         <main className="flex-1">{children}</main>
         <SiteFooter />
       </body>

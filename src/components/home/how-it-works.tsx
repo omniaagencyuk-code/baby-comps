@@ -1,27 +1,6 @@
-const steps = [
-  {
-    icon: '🎁',
-    title: 'Pick a prize',
-    text: 'Browse our premium baby and family competitions and choose your favourite.',
-  },
-  {
-    icon: '🧠',
-    title: 'Answer & enter',
-    text: 'Answer a simple skill question and choose how many entries you’d like.',
-  },
-  {
-    icon: '💳',
-    title: 'Pay securely',
-    text: 'Checkout safely with Stripe. Your ticket numbers are allocated instantly.',
-  },
-  {
-    icon: '🏆',
-    title: 'Watch the draw',
-    text: 'We draw on the published date using a verifiable random method and publish the winner.',
-  },
-];
+import type { IconItem } from '@/lib/content';
 
-export function HowItWorks() {
+export function HowItWorks({ steps }: { steps: IconItem[] }) {
   return (
     <section id="how-it-works" className="scroll-mt-24 bg-white py-16">
       <div className="container">

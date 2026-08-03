@@ -46,22 +46,3 @@ export async function updateProfileAction(
   revalidatePath('/account/profile');
   return { success: true };
 }
-
-/** Toggle a saved competition for the current user. */
-export async function toggleSavedAction(competitionId: string): Promise<void> {
-  const session = await getSession();
-  if (!session) return;
-
-  const existing = await prisma.savedCompetition.findUnique({
-    where: { userId_competitionId: { userId: session.userId, competitionId } },
-  });
-
-  if (existing) {
-    await prisma.savedCompetition.delete({ where: { id: existing.id } });
-  } else {
-    await prisma.savedCompetition.create({
-      data: { userId: session.userId, competitionId },
-    });
-  }
-  revalidatePath('/account/saved');
-}

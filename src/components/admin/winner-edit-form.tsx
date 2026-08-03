@@ -2,6 +2,7 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import type { FormState } from '@/lib/actions/admin';
+import { ImageField } from './image-field';
 
 function SaveBtn() {
   const { pending } = useFormStatus();
@@ -26,7 +27,7 @@ export function WinnerEditForm({
         <input name="name" defaultValue={values.name} placeholder="Winner name" className="input" />
         <input name="location" defaultValue={values.location} placeholder="Location" className="input" />
       </div>
-      <input name="image" defaultValue={values.image} placeholder="Image URL" className="input" />
+      <ImageField name="image" label="Winner photo" defaultValue={values.image} folder="winners" />
       <textarea name="quote" defaultValue={values.quote} placeholder="Winner quote" rows={2} className="input resize-y" />
       <div className="flex items-center justify-between">
         <label className="flex items-center gap-2 text-sm">

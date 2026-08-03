@@ -18,7 +18,8 @@ export function quotePrice(ticketPrice: number, quantity: number, coupon?: Coupo
   const unitPrice = ticketPrice;
   const subtotal = unitPrice * quantity;
   let discount = 0;
-  if (coupon && coupon.active) {
+  const meetsMinSpend = !coupon?.minSpend || subtotal >= coupon.minSpend;
+  if (coupon && coupon.active && meetsMinSpend) {
     if (coupon.type === 'PERCENT') {
       discount = Math.round((subtotal * coupon.value) / 100);
     } else {

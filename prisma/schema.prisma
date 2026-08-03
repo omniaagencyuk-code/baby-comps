@@ -122,6 +122,8 @@ model Competition {
   // Publishing & SEO
   status        CompetitionStatus @default(DRAFT)
   featured      Boolean           @default(false)
+  archived      Boolean           @default(false)
+  isTemplate    Boolean           @default(false)
   metaTitle     String?
   metaDescription String?
 
@@ -140,6 +142,8 @@ model Competition {
   @@index([featured])
   @@index([closingDate])
   @@index([categoryId])
+  @@index([archived])
+  @@index([isTemplate])
 }
 
 model Entry {
@@ -338,12 +342,57 @@ model Coupon {
 model Media {
   id        String   @id @default(cuid())
   url       String
+  filename  String?
   alt       String?
   type      String   @default("image")
+  folder    String   @default("general")
   width     Int?
   height    Int?
   bytes     Int?
   createdAt DateTime @default(now())
+
+  @@index([folder])
+}
+
+// Customer reviews / testimonials shown on the homepage (CMS-managed).
+model Review {
+  id        String   @id @default(cuid())
+  name      String
+  location  String?
+  quote     String   @db.Text
+  rating    Int      @default(5)
+  avatar    String?
+  published Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published])
+}
+
+// Structured, editable content blocks for homepage sections etc.
+// `data` holds the block's JSON payload (shape depends on `key`).
+model ContentBlock {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  label     String
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+// CMS-managed content pages (about, terms, privacy, responsible play, guides…).
+model Page {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  content         String   @db.Text
+  metaTitle       String?
+  metaDescription String?
+  published       Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@index([published])
 }
 
 model SiteSetting {
