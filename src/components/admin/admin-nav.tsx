@@ -9,6 +9,7 @@ const groups = [
     links: [
       { href: '/admin', label: 'Dashboard', icon: '📊' },
       { href: '/admin/competitions', label: 'Competitions', icon: '🎁' },
+      { href: '/admin/categories', label: 'Categories', icon: '🗂️' },
       { href: '/admin/orders', label: 'Orders', icon: '🧾' },
       { href: '/admin/customers', label: 'Customers', icon: '👥' },
       { href: '/admin/winners', label: 'Winners', icon: '🏆' },

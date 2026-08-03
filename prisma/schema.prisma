@@ -413,6 +413,14 @@ model SavedCompetition {
   @@unique([userId, competitionId])
 }
 
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String   @default("website")
+  confirmed Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
 model AuditLog {
   id        String   @id @default(cuid())
   action    String

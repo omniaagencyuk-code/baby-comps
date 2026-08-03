@@ -11,20 +11,40 @@ const templates = [
 ];
 
 export default async function AdminEmailPage() {
-  const subscribers = await prisma.user.count({ where: { marketingOptIn: true } });
-  const customers = await prisma.user.count({ where: { role: 'USER' } });
+  const [optedIn, customers, newsletter, recent] = await Promise.all([
+    prisma.user.count({ where: { marketingOptIn: true } }),
+    prisma.user.count({ where: { role: 'USER' } }),
+    prisma.newsletterSubscriber.count(),
+    prisma.newsletterSubscriber.findMany({ orderBy: { createdAt: 'desc' }, take: 10 }),
+  ]);
+  const subscribers = optedIn;
 
   return (
     <div className="space-y-6">
       <AdminPageHeader title="Email" description="Transactional and marketing email." />
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Marketing subscribers" value={subscribers.toLocaleString()} />
+      <div className="grid gap-4 sm:grid-cols-4">
+        <StatCard label="Marketing opt-ins" value={subscribers.toLocaleString()} />
+        <StatCard label="Newsletter subscribers" value={newsletter.toLocaleString()} />
         <StatCard label="Total customers" value={customers.toLocaleString()} />
         <StatCard
           label="Opt-in rate"
           value={customers ? `${Math.round((subscribers / customers) * 100)}%` : '—'}
         />
       </div>
+
+      {recent.length > 0 && (
+        <AdminCard className="p-5">
+          <h2 className="mb-3 font-semibold">Recent newsletter signups</h2>
+          <ul className="divide-y divide-black/5 text-sm">
+            {recent.map((s) => (
+              <li key={s.id} className="flex items-center justify-between py-2">
+                <span>{s.email}</span>
+                <span className="text-xs text-ink/40">{s.source}</span>
+              </li>
+            ))}
+          </ul>
+        </AdminCard>
+      )}
       <AdminCard className="p-5">
         <p className="mb-4 rounded-xl bg-brand-50 px-4 py-3 text-sm text-ink/70">
           💡 Connect an email provider (Resend, Postmark or SendGrid) via environment variables to

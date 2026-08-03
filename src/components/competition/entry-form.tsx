@@ -38,8 +38,46 @@ export function EntryForm({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const total = quantity * ticketPrice;
+  // Coupon state
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCode, setAppliedCode] = useState<string | null>(null);
+  const [discount, setDiscount] = useState(0);
+  const [couponMessage, setCouponMessage] = useState<string | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  const subtotal = quantity * ticketPrice;
+  const total = Math.max(0, subtotal - discount);
   const clamp = (n: number) => Math.max(1, Math.min(cap, n));
+
+  async function fetchQuote(code: string, qty: number) {
+    setCouponLoading(true);
+    try {
+      const res = await fetch('/api/checkout/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ competitionId, quantity: qty, couponCode: code }),
+      });
+      const data = await res.json();
+      setDiscount(data.discount || 0);
+      setCouponMessage(data.couponMessage ?? null);
+      setAppliedCode(data.couponApplied ? code.toUpperCase() : null);
+    } catch {
+      setCouponMessage('Could not apply code right now.');
+    } finally {
+      setCouponLoading(false);
+    }
+  }
+
+  function applyCoupon() {
+    if (!couponInput.trim()) return;
+    fetchQuote(couponInput.trim(), quantity);
+  }
+
+  function updateQuantity(next: number) {
+    const q = clamp(next);
+    setQuantity(q);
+    if (appliedCode) fetchQuote(appliedCode, q); // keep discount accurate
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -61,7 +99,7 @@ export function EntryForm({
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ competitionId, quantity, answer }),
+        body: JSON.stringify({ competitionId, quantity, answer, couponCode: appliedCode ?? undefined }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -124,7 +162,7 @@ export function EntryForm({
         <div className="mb-3 flex items-center gap-2">
           <button
             type="button"
-            onClick={() => setQuantity((q) => clamp(q - 1))}
+            onClick={() => updateQuantity(quantity - 1)}
             className="h-11 w-11 rounded-xl border border-black/10 text-xl font-bold hover:bg-black/5"
             aria-label="Decrease"
           >
@@ -136,12 +174,12 @@ export function EntryForm({
             min={1}
             max={cap}
             value={quantity}
-            onChange={(e) => setQuantity(clamp(Number(e.target.value) || 1))}
+            onChange={(e) => updateQuantity(Number(e.target.value) || 1)}
             className="input h-11 w-24 text-center"
           />
           <button
             type="button"
-            onClick={() => setQuantity((q) => clamp(q + 1))}
+            onClick={() => updateQuantity(quantity + 1)}
             className="h-11 w-11 rounded-xl border border-black/10 text-xl font-bold hover:bg-black/5"
             aria-label="Increase"
           >
@@ -153,7 +191,7 @@ export function EntryForm({
             <button
               key={n}
               type="button"
-              onClick={() => setQuantity(n)}
+              onClick={() => updateQuantity(n)}
               className={`rounded-full px-3 py-1 text-sm font-medium ${
                 quantity === n ? 'bg-brand-600 text-white' : 'bg-brand-50 text-brand-700 hover:bg-brand-100'
               }`}
@@ -164,9 +202,52 @@ export function EntryForm({
         </div>
       </div>
 
-      <div className="flex items-baseline justify-between border-t border-black/5 pt-4">
-        <span className="font-medium">Total</span>
-        <span className="text-2xl font-bold">{formatMoney(total)}</span>
+      {/* Discount code */}
+      <div>
+        <label className="label" htmlFor="coupon">
+          Discount code
+        </label>
+        <div className="flex gap-2">
+          <input
+            id="coupon"
+            value={couponInput}
+            onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+            placeholder="Enter code"
+            className="input h-11 flex-1 uppercase"
+          />
+          <button
+            type="button"
+            onClick={applyCoupon}
+            disabled={couponLoading || !couponInput.trim()}
+            className="btn-secondary px-4 text-sm"
+          >
+            {couponLoading ? '…' : 'Apply'}
+          </button>
+        </div>
+        {couponMessage && (
+          <p className={`mt-1.5 text-xs ${appliedCode ? 'text-emerald-600' : 'text-amber-600'}`}>
+            {couponMessage}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-1 border-t border-black/5 pt-4">
+        {discount > 0 && (
+          <>
+            <div className="flex items-baseline justify-between text-sm text-ink/60">
+              <span>Subtotal</span>
+              <span>{formatMoney(subtotal)}</span>
+            </div>
+            <div className="flex items-baseline justify-between text-sm text-emerald-600">
+              <span>Discount {appliedCode ? `(${appliedCode})` : ''}</span>
+              <span>−{formatMoney(discount)}</span>
+            </div>
+          </>
+        )}
+        <div className="flex items-baseline justify-between">
+          <span className="font-medium">Total</span>
+          <span className="text-2xl font-bold">{formatMoney(total)}</span>
+        </div>
       </div>
 
       {error && (

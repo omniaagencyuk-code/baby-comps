@@ -5,6 +5,25 @@ import { useState } from 'react';
 export function NewsletterSignup() {
   const [email, setEmail] = useState('');
   const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  async function subscribe(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email) return;
+    setLoading(true);
+    try {
+      await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'homepage' }),
+      });
+    } catch {
+      // fail soft
+    } finally {
+      setLoading(false);
+      setDone(true);
+    }
+  }
 
   return (
     <section className="py-16">
@@ -22,13 +41,7 @@ export function NewsletterSignup() {
                 🎉 You&apos;re in! Check your inbox to confirm.
               </p>
             ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (email) setDone(true);
-                }}
-                className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row"
-              >
+              <form onSubmit={subscribe} className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
                 <input
                   type="email"
                   required
@@ -39,9 +52,10 @@ export function NewsletterSignup() {
                 />
                 <button
                   type="submit"
-                  className="rounded-full bg-ink px-6 py-3 font-semibold text-white transition hover:bg-black"
+                  disabled={loading}
+                  className="rounded-full bg-ink px-6 py-3 font-semibold text-white transition hover:bg-black disabled:opacity-60"
                 >
-                  Subscribe
+                  {loading ? 'Subscribing…' : 'Subscribe'}
                 </button>
               </form>
             )}
