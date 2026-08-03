@@ -2,10 +2,10 @@ import { prisma } from '@/lib/prisma';
 import { formatDate } from '@/lib/utils';
 import { AdminPageHeader, AdminCard } from '@/components/admin/ui';
 import { Badge } from '@/components/ui/badge';
-import { ConfirmSubmit } from '@/components/admin/confirm-submit';
 import { WinnerEditForm } from '@/components/admin/winner-edit-form';
 import { ManualWinnerForm } from '@/components/admin/manual-winner-form';
-import { drawWinnerAction, updateWinnerAction } from '@/lib/actions/admin';
+import { DrawWinnerButton } from '@/components/admin/draw-winner-button';
+import { updateWinnerAction } from '@/lib/actions/admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -53,14 +53,7 @@ export default async function AdminWinnersPage() {
                     Closed {formatDate(c.closingDate)} · {c.entriesSold} entries
                   </p>
                 </div>
-                <form action={drawWinnerAction.bind(null, c.id)}>
-                  <ConfirmSubmit
-                    confirm={`Draw a winner for "${c.title}"? This selects a random valid entry.`}
-                    className="btn-primary px-4 py-2 text-sm"
-                  >
-                    🎲 Draw winner
-                  </ConfirmSubmit>
-                </form>
+                <DrawWinnerButton competitionId={c.id} />
               </AdminCard>
             ))}
           </div>

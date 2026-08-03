@@ -237,27 +237,49 @@ export async function setArchivedAction(id: string, archived: boolean): Promise<
 
 // ---- Winners ------------------------------------------------------
 
-export async function drawWinnerAction(competitionId: string): Promise<void> {
+export async function drawWinnerAction(
+  competitionId: string,
+  _prev: FormState,
+  _formData: FormData,
+): Promise<FormState> {
   await requireAdmin();
   const comp = await prisma.competition.findUnique({
     where: { id: competitionId },
     include: { entries: { where: { status: 'CONFIRMED' } } },
   });
-  if (!comp) return;
+  if (!comp) return { error: 'Competition not found.' };
 
   let winnerUserId: string | null = null;
   let winnerName = 'Lucky Entrant';
   let ticketNumber: number | null = null;
 
   if (comp.entries.length > 0) {
+    // Draw strictly from CONFIRMED entries — cancelled/refunded tickets are
+    // never eligible to win.
     const idx = Math.floor(Math.random() * comp.entries.length);
     const entry = comp.entries[idx];
     ticketNumber = entry.ticketNumber;
     winnerUserId = entry.userId;
     const user = await prisma.user.findUnique({ where: { id: entry.userId } });
     winnerName = user?.name || user?.email?.split('@')[0] || winnerName;
-  } else if (comp.entriesSold > 0) {
-    ticketNumber = Math.floor(Math.random() * comp.entriesSold) + 1;
+  } else {
+    // No confirmed entries. Only fall back to a random ticket number for
+    // competitions that have NO real entries at all (e.g. seeded/demo data).
+    // If entries exist but every one was cancelled/refunded, refuse to draw a
+    // winner with no valid owner.
+    const totalEntries = await prisma.entry.count({ where: { competitionId } });
+    if (totalEntries > 0) {
+      await logAudit('winner.draw.blocked', 'Competition', competitionId, {
+        reason: 'no_confirmed_entries',
+      });
+      return {
+        error:
+          'No valid (confirmed) entries to draw from — all entries were cancelled or refunded.',
+      };
+    }
+    if (comp.entriesSold > 0) {
+      ticketNumber = Math.floor(Math.random() * comp.entriesSold) + 1;
+    }
   }
 
   await prisma.$transaction([
@@ -280,6 +302,7 @@ export async function drawWinnerAction(competitionId: string): Promise<void> {
   await logAudit('winner.draw', 'Competition', competitionId, { ticketNumber });
   revalidatePath('/admin/winners');
   revalidatePath('/winners');
+  return { success: winnerUserId ? `Winner drawn: ${winnerName} (ticket #${ticketNumber}).` : 'Winner drawn.' };
 }
 
 /** Manually create a winner for a competition (no random draw). */

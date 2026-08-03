@@ -4,6 +4,8 @@ import { requireUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { formatMoney, formatDate } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { ConfirmSubmit } from '@/components/admin/confirm-submit';
+import { cancelMyPendingOrderAction } from '@/lib/actions/customer-orders';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,7 +78,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
           </tfoot>
         </table>
 
-        <div className="mt-5 flex gap-3">
+        <div className="mt-5 flex flex-wrap items-center gap-3">
           <a
             href={`/api/orders/${order.id}/invoice`}
             target="_blank"
@@ -85,7 +87,22 @@ export default async function OrderDetailPage({ params }: { params: { id: string
           >
             Download invoice
           </a>
+          {order.status === 'PENDING' && (
+            <form action={cancelMyPendingOrderAction.bind(null, order.id)}>
+              <ConfirmSubmit
+                confirm="Cancel this unpaid order? No payment has been taken and no tickets were issued."
+                className="btn-ghost px-4 py-2 text-sm text-red-500"
+              >
+                Cancel unpaid order
+              </ConfirmSubmit>
+            </form>
+          )}
         </div>
+        {order.status === 'PENDING' && (
+          <p className="mt-2 text-xs text-muted">
+            This order is awaiting payment — no tickets have been issued yet.
+          </p>
+        )}
       </div>
 
       {order.entries.length > 0 && (
