@@ -24,6 +24,7 @@ const columns = [
     title: 'Support',
     links: [
       { label: 'FAQ', href: '/faq' },
+      { label: 'Free Postal Entry', href: '/free-entry' },
       { label: 'Terms & Conditions', href: '/terms' },
       { label: 'Privacy Policy', href: '/privacy' },
       { label: 'Responsible Play', href: '/responsible-play' },
@@ -72,7 +73,13 @@ export function SiteFooter() {
             © {new Date().getFullYear()} {siteConfig.name}. All rights reserved. Must be 18+ and a UK
             resident to enter. Please play responsibly.
           </p>
-          <p>A free postal entry route is always available — see our Terms.</p>
+          <p>
+            No purchase necessary. A{' '}
+            <Link href="/free-entry" className="font-semibold text-brand-700 hover:underline">
+              free postal entry route
+            </Link>{' '}
+            is always available.
+          </p>
         </div>
       </div>
     </footer>

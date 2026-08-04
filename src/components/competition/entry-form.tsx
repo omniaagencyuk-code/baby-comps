@@ -263,6 +263,13 @@ export function EntryForm({
       <p className="text-center text-xs text-ink/50">
         Secure checkout with Stripe · {remaining.toLocaleString()} entries remaining
       </p>
+
+      <p className="text-center text-xs text-ink/60">
+        No purchase necessary —{' '}
+        <a href="/free-entry" className="font-semibold text-brand-700 hover:underline">
+          enter free by post
+        </a>
+      </p>
     </form>
   );
 }

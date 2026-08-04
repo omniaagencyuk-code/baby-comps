@@ -3,12 +3,18 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import { updateSettingsAction, type FormState } from '@/lib/actions/admin';
 
-const FIELDS: { key: string; label: string; hint?: string }[] = [
+const FIELDS: { key: string; label: string; hint?: string; multiline?: boolean }[] = [
   { key: 'site.tagline', label: 'Homepage tagline' },
   { key: 'site.announcement', label: 'Announcement bar text' },
   { key: 'trust.entriesToDate', label: 'Entries to date (display)' },
   { key: 'trust.prizesGiven', label: 'Prizes given (display)' },
   { key: 'trust.rating', label: 'Average rating (display)' },
+  {
+    key: 'postal.address',
+    label: 'Free postal entry (AMOE) address',
+    hint: 'Shown on the Free Postal Entry page. Put each line on its own line.',
+    multiline: true,
+  },
 ];
 
 function Btn() {
@@ -27,12 +33,22 @@ export function SettingsForm({ values }: { values: Record<string, string> }) {
       {FIELDS.map((f) => (
         <div key={f.key}>
           <label className="label" htmlFor={f.key}>{f.label}</label>
-          <input
-            id={f.key}
-            name={`setting.${f.key}`}
-            defaultValue={values[f.key] ?? ''}
-            className="input"
-          />
+          {f.multiline ? (
+            <textarea
+              id={f.key}
+              name={`setting.${f.key}`}
+              defaultValue={values[f.key] ?? ''}
+              rows={4}
+              className="input resize-y"
+            />
+          ) : (
+            <input
+              id={f.key}
+              name={`setting.${f.key}`}
+              defaultValue={values[f.key] ?? ''}
+              className="input"
+            />
+          )}
           {f.hint && <p className="mt-1 text-xs text-ink/50">{f.hint}</p>}
         </div>
       ))}

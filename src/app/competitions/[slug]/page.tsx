@@ -14,6 +14,7 @@ import { CompetitionGrid } from '@/components/competition/competition-grid';
 import { prisma } from '@/lib/prisma';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SectionHeading } from '@/components/ui/section-heading';
+import { Icon } from '@/components/ui/icon';
 
 export const dynamic = 'force-dynamic';
 
@@ -194,6 +195,19 @@ export default async function CompetitionDetailPage({ params }: { params: { slug
               isAuthenticated={Boolean(session)}
               isOpen={isOpen}
             />
+
+            <a
+              href="/free-entry"
+              className="flex items-center gap-3 rounded-2xl border border-brand-200 bg-brand-50 p-4 text-sm transition hover:bg-brand-100"
+            >
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-brand-600">
+                <Icon name="mail" className="text-[20px]" />
+              </span>
+              <span>
+                <span className="font-semibold text-secondaryink">No purchase necessary.</span>{' '}
+                <span className="text-muted">Enter this competition free by post →</span>
+              </span>
+            </a>
 
             <TrustSignals />
           </div>
