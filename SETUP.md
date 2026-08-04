@@ -24,7 +24,7 @@ Copy `.env.example` to `.env` and fill in every value.
 | `NEXT_PUBLIC_SITE_URL`               | ✅       | Full site URL, no trailing slash                   |
 | `NEXT_PUBLIC_SITE_NAME`              | ➖       | Defaults to "Tiny Treasure Competitions"           |
 | `DATABASE_URL`                       | ✅       | Pooled PostgreSQL connection string                |
-| `DIRECT_URL`                         | ➖       | Direct (non-pooled) URL for migrations             |
+| `DATABASE_URL_UNPOOLED`              | ➖       | Direct (non-pooled) URL; auto-set by Neon/Vercel   |
 | `AUTH_SECRET`                        | ✅       | `openssl rand -base64 32`                          |
 | `STRIPE_SECRET_KEY`                  | ✅\*     | `sk_test_…` / `sk_live_…`                           |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ✅\*     | `pk_test_…` / `pk_live_…`                           |
@@ -79,7 +79,7 @@ stripe listen --forward-to localhost:3000/api/webhooks/stripe
    (Production and Preview).
 4. Set the **Build Command** to `npm run build` (default) — it runs
    `prisma generate` automatically.
-5. Provision a PostgreSQL database and set `DATABASE_URL` (+ `DIRECT_URL`).
+5. Provision a PostgreSQL database and set `DATABASE_URL` (+ `DATABASE_URL_UNPOOLED`).
 6. After the first deploy, run migrations against production:
    ```bash
    npx prisma migrate deploy      # with DATABASE_URL pointing at prod

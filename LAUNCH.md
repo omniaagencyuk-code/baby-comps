@@ -8,7 +8,7 @@ Work top to bottom; the admin dashboard shows a live "Launch readiness" panel an
 
 ## 1. Environment & secrets
 
-- [ ] `DATABASE_URL` (and `DIRECT_URL`) point at the **production** database.
+- [ ] `DATABASE_URL` (and `DATABASE_URL_UNPOOLED`) point at the **production** database.
 - [ ] `AUTH_SECRET` is a fresh, strong value (`openssl rand -base64 32`) — **not**
       the placeholder, and different from any staging value.
 - [ ] `NEXT_PUBLIC_SITE_URL` is the real production URL (no trailing slash).

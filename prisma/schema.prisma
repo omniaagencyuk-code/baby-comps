@@ -7,8 +7,12 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
+  // Pooled connection for the app (Neon/Vercel provide DATABASE_URL).
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  // Direct connection for schema changes / `prisma db push` (Neon provides
+  // DATABASE_URL_UNPOOLED). Falls back to DATABASE_URL locally if unset via a
+  // duplicate — set DATABASE_URL_UNPOOLED to the same value for local dev.
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 // ------------------------------------------------------------------
