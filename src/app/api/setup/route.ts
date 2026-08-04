@@ -1,16 +1,20 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashPassword } from '@/lib/password';
+import { runSeed } from '@/lib/seed';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 /**
  * One-time bootstrap endpoint to create the first admin user on a fresh
  * production database — so you don't need a local shell.
  *
  * Guarded by the SETUP_TOKEN env var and refuses once an admin already exists.
- * Usage:  GET /api/setup?token=YOUR_SETUP_TOKEN
+ * Usage:
+ *   GET /api/setup?token=YOUR_SETUP_TOKEN          → create admin only
+ *   GET /api/setup?token=YOUR_SETUP_TOKEN&demo=1   → admin + demo sample data
  * After first use, delete the SETUP_TOKEN env var (the route then no-ops).
  */
 export async function GET(req: Request) {
@@ -34,15 +38,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Database not reachable.' }, { status: 503 });
   }
 
-  const existingAdmin = await prisma.user.findFirst({ where: { role: 'ADMIN' } });
-  if (existingAdmin) {
-    return NextResponse.json({
-      ok: true,
-      message: 'An admin already exists — nothing to do. You can remove SETUP_TOKEN now.',
-      admin: existingAdmin.email,
-    });
-  }
-
+  const wantsDemo = new URL(req.url).searchParams.get('demo') === '1';
   const email = (process.env.SEED_ADMIN_EMAIL || 'admin@tinytreasurecompetitions.com').toLowerCase();
   const password = process.env.SEED_ADMIN_PASSWORD;
   if (!password || password.length < 8) {
@@ -52,18 +48,34 @@ export async function GET(req: Request) {
     );
   }
 
-  const admin = await prisma.user.create({
-    data: {
-      email,
-      name: 'Site Admin',
-      role: 'ADMIN',
-      passwordHash: await hashPassword(password),
-    },
-  });
+  // Ensure an admin exists (idempotent).
+  const existingAdmin = await prisma.user.findFirst({ where: { role: 'ADMIN' } });
+  if (!existingAdmin) {
+    await prisma.user.create({
+      data: { email, name: 'Site Admin', role: 'ADMIN', passwordHash: await hashPassword(password) },
+    });
+  }
+
+  // Optionally load the demo sample data.
+  let seedLog: string[] | undefined;
+  if (wantsDemo) {
+    try {
+      seedLog = await runSeed(prisma);
+    } catch (err) {
+      return NextResponse.json(
+        { error: `Demo seeding failed: ${err instanceof Error ? err.message : 'unknown'}` },
+        { status: 500 },
+      );
+    }
+  }
 
   return NextResponse.json({
     ok: true,
-    message: 'Admin created. Log in at /login, then delete the SETUP_TOKEN env var.',
-    admin: admin.email,
+    message: existingAdmin
+      ? 'Admin already existed.'
+      : 'Admin created. Log in at /login, then delete the SETUP_TOKEN env var.',
+    admin: email,
+    demoLoaded: wantsDemo,
+    seedLog,
   });
 }
