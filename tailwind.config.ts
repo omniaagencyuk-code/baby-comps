@@ -19,38 +19,39 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Warm caramel/cream "premium baby" brand (from the approved design).
+        // "Premium Nursery" brand — Soft Chestnut, built into a light,
+        // premium beige/chestnut scale. 600 is the primary brand colour.
         brand: {
-          50: '#fbf6ef',
-          100: '#f6e5d7',
-          200: '#f0d3b8',
-          300: '#e6b98c',
-          400: '#d59a5c',
-          500: '#a9772f',
-          600: '#825621', // primary
-          700: '#6f4612',
-          800: '#5a3810',
-          900: '#4b2b00',
+          50: '#f5eee6', // very light chestnut tint (hover backgrounds)
+          100: '#ede2d4', // Oatmeal — badges, progress track, icon chips
+          200: '#d7c3ae', // Teddy Beige — soft borders
+          300: '#c7af97',
+          400: '#b4927e', // Clay — secondary brown, focus rings
+          500: '#a17e68',
+          600: '#916c58', // Soft Chestnut — PRIMARY brand colour
+          700: '#785845', // darker chestnut — hover, links, badge text
+          800: '#5c4335',
+          900: '#46372f',
         },
-        // Soft peach used for gentle background washes/accents.
+        // Muted Olive — used very sparingly for small accents/decoration only.
         accent: {
-          50: '#fff1e7',
-          100: '#ffe6d2',
-          200: '#feddbe',
-          300: '#efcfb0',
-          400: '#e6b98c',
-          500: '#d59a5c',
-          600: '#a9772f',
-          700: '#6f4612',
+          50: '#f3f3ec',
+          100: '#e8e8dc',
+          200: '#d5d4c1',
+          300: '#c2c0a6',
+          400: '#aaa88b', // Muted Olive
+          500: '#94926f',
+          600: '#7c7a5a',
+          700: '#63613f',
         },
-        // Material-style warm surfaces to match the design tokens.
-        cream: '#fff8f4',
-        sand: '#fbebde', // surface-container
-        'surface-variant': '#f2dfcf',
-        'outline-warm': '#c0afa0',
-        secondaryink: '#735b42', // secondary text/headings
-        muted: '#6a5d50', // on-surface-variant
-        ink: '#3b3026', // on-surface
+        // Neutral surfaces — light & premium.
+        cream: '#fbf8f3', // Milk — dominant page background
+        sand: '#ede2d4', // Oatmeal — section separation
+        'surface-variant': '#d7c3ae', // Teddy Beige — subtle card/section borders
+        'outline-warm': '#b4927e', // Clay — input borders (used at reduced opacity)
+        secondaryink: '#3a302b', // Dark Cocoa — headings
+        muted: '#6e5e52', // soft cocoa — secondary text
+        ink: '#3a302b', // Dark Cocoa — primary text / dark contrast
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
@@ -62,8 +63,8 @@ const config: Config = {
         '3xl': '1.75rem',
       },
       boxShadow: {
-        card: '0 4px 20px -6px rgba(130, 86, 33, 0.12)',
-        'card-hover': '0 12px 34px -10px rgba(130, 86, 33, 0.22)',
+        card: '0 4px 20px -6px rgba(145, 108, 88, 0.12)',
+        'card-hover': '0 12px 34px -10px rgba(145, 108, 88, 0.20)',
       },
       keyframes: {
         'fade-up': {

@@ -10,8 +10,8 @@ export default function GlobalError({ reset }: { error: Error; reset: () => void
           minHeight: '100vh',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#fff8f4',
-          color: '#3b3026',
+          background: '#fbf8f3',
+          color: '#3a302b',
           textAlign: 'center',
           padding: '24px',
         }}
@@ -19,7 +19,7 @@ export default function GlobalError({ reset }: { error: Error; reset: () => void
         <div>
           <div style={{ fontSize: 48 }}>🧸</div>
           <h1 style={{ marginTop: 16 }}>Something went wrong</h1>
-          <p style={{ color: '#6a5d50' }}>Please try again in a moment.</p>
+          <p style={{ color: '#6e5e52' }}>Please try again in a moment.</p>
           <button
             onClick={reset}
             style={{
@@ -27,7 +27,7 @@ export default function GlobalError({ reset }: { error: Error; reset: () => void
               padding: '10px 20px',
               borderRadius: 9999,
               border: 'none',
-              background: '#825621',
+              background: '#916c58',
               color: '#fff',
               fontWeight: 600,
               cursor: 'pointer',
