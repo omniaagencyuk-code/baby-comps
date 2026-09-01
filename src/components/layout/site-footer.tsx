@@ -32,15 +32,22 @@ const columns = [
   },
 ];
 
-export function SiteFooter() {
+export function SiteFooter({ logoUrl }: { logoUrl?: string }) {
   return (
     <footer className="mt-16 border-t border-black/5 bg-white">
       <div className="container py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold">
-              <span aria-hidden className="text-2xl">🧸</span>
-              Tiny <span className="text-brand-600">Treasure</span>
+            <Link href="/" className="inline-flex items-center gap-2 font-display text-lg font-bold" aria-label={siteConfig.name}>
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt={siteConfig.name} className="h-14 w-auto" />
+              ) : (
+                <>
+                  <span aria-hidden className="text-2xl">🧸</span>
+                  Tiny <span className="text-brand-600">Treasure</span>
+                </>
+              )}
             </Link>
             <p className="mt-3 max-w-xs text-sm text-ink/60">{siteConfig.description}</p>
             <div className="mt-4 flex gap-3 text-sm text-ink/60">

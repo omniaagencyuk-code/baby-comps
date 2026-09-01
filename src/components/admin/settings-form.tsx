@@ -2,6 +2,7 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import { updateSettingsAction, type FormState } from '@/lib/actions/admin';
+import { ImageField } from './image-field';
 
 const FIELDS: { key: string; label: string; hint?: string; multiline?: boolean }[] = [
   { key: 'site.tagline', label: 'Homepage tagline' },
@@ -30,6 +31,15 @@ export function SettingsForm({ values }: { values: Record<string, string> }) {
   const [state, action] = useFormState<FormState, FormData>(updateSettingsAction, {});
   return (
     <form action={action} className="space-y-4 rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
+      <div className="border-b border-black/5 pb-4">
+        <ImageField
+          name="setting.brand.logoUrl"
+          label="Site logo"
+          defaultValue={values['brand.logoUrl'] ?? ''}
+          folder="brand"
+          hint="Shown in the header and footer. Leave blank to use the text logo. Transparent PNG or wide logo works best."
+        />
+      </div>
       {FIELDS.map((f) => (
         <div key={f.key}>
           <label className="label" htmlFor={f.key}>{f.label}</label>

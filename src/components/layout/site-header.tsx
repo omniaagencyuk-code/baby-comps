@@ -7,9 +7,11 @@ import { Icon } from '@/components/ui/icon';
 export function SiteHeader({
   session,
   announcement,
+  logoUrl,
 }: {
   session: SessionPayload | null;
   announcement?: string;
+  logoUrl?: string;
 }) {
   return (
     <header className="sticky top-0 z-40 border-b border-black/5 bg-cream/90 backdrop-blur">
@@ -19,11 +21,18 @@ export function SiteHeader({
         </div>
       )}
       <div className="container flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold">
-          <span aria-hidden className="text-2xl">🧸</span>
-          <span className="leading-tight">
-            Tiny <span className="text-brand-600">Treasure</span>
-          </span>
+        <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold" aria-label={siteConfig.name}>
+          {logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logoUrl} alt={siteConfig.name} className="h-10 w-auto sm:h-12" />
+          ) : (
+            <>
+              <span aria-hidden className="text-2xl">🧸</span>
+              <span className="leading-tight">
+                Tiny <span className="text-brand-600">Treasure</span>
+              </span>
+            </>
+          )}
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">

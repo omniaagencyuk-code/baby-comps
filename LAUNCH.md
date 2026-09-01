@@ -45,12 +45,16 @@ Work top to bottom; the admin dashboard shows a live "Launch readiness" panel an
       order shows **PAID** in the admin.
 - [ ] Test a refund from the admin order page and confirm entries are cancelled.
 
-## 4. Media storage
+## 4. Media storage (Vercel Blob)
 
-- [ ] Uploads currently write to `public/uploads` (fine locally, **not** on
-      Vercel's read-only filesystem). Swap `saveUpload`/`deleteUpload` in
-      `src/lib/storage.ts` for Vercel Blob / Cloudinary / UploadThing.
-- [ ] Add any external image hosts to `next.config.mjs → images.remotePatterns`.
+- [ ] Create a Blob store: Vercel dashboard → **Storage → Create Database →
+      Blob** → connect it to the project. This injects `BLOB_READ_WRITE_TOKEN`.
+- [ ] **Redeploy** so the token is live. After that, all admin uploads (logo,
+      competition images, etc.) go to Vercel Blob and persist across deploys.
+      Without the token, uploads fall back to local disk (dev only — they do
+      **not** persist on Vercel).
+- [ ] Add any other external image hosts to `next.config.mjs →
+      images.remotePatterns` (Vercel Blob + Unsplash are already allowed).
 
 ## 5. Email (recommended)
 
