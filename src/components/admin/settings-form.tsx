@@ -31,7 +31,7 @@ export function SettingsForm({ values }: { values: Record<string, string> }) {
   const [state, action] = useFormState<FormState, FormData>(updateSettingsAction, {});
   return (
     <form action={action} className="space-y-4 rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
-      <div className="border-b border-black/5 pb-4">
+      <div className="space-y-4 border-b border-black/5 pb-4">
         <ImageField
           name="setting.brand.logoUrl"
           label="Site logo"
@@ -39,6 +39,22 @@ export function SettingsForm({ values }: { values: Record<string, string> }) {
           folder="brand"
           hint="Shown in the header and footer. Leave blank to use the text logo. Transparent PNG or wide logo works best."
         />
+        <div className="max-w-xs">
+          <label className="label" htmlFor="brand.logoHeight">Logo height (px)</label>
+          <input
+            id="brand.logoHeight"
+            name="setting.brand.logoHeight"
+            type="number"
+            min={32}
+            max={120}
+            placeholder="64"
+            defaultValue={values['brand.logoHeight'] ?? ''}
+            className="input"
+          />
+          <p className="mt-1 text-xs text-ink/50">
+            Header logo height in pixels (32–120). Bigger = more zoomed in. Try 80–100 for a square logo.
+          </p>
+        </div>
       </div>
       {FIELDS.map((f) => (
         <div key={f.key}>

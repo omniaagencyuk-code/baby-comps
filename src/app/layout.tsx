@@ -49,10 +49,11 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [session, announcement, logoUrl] = await Promise.all([
+  const [session, announcement, logoUrl, logoHeight] = await Promise.all([
     getSession(),
     getSetting('site.announcement', 'Free UK delivery on all physical prizes · Trusted, verifiable draws'),
     getSetting('brand.logoUrl', ''),
+    getSetting('brand.logoHeight', ''),
   ]);
   const orgJsonLd = {
     '@context': 'https://schema.org',
@@ -95,9 +96,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {stripeMode() === 'unset' ? 'Stripe is not configured (demo checkout).' : 'Using Stripe test keys.'}
           </div>
         )}
-        <SiteHeader session={session} announcement={announcement} logoUrl={logoUrl} />
+        <SiteHeader session={session} announcement={announcement} logoUrl={logoUrl} logoHeight={logoHeight} />
         <main className="flex-1">{children}</main>
-        <SiteFooter logoUrl={logoUrl} />
+        <SiteFooter logoUrl={logoUrl} logoHeight={logoHeight} />
       </body>
     </html>
   );

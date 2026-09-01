@@ -32,7 +32,8 @@ const columns = [
   },
 ];
 
-export function SiteFooter({ logoUrl }: { logoUrl?: string }) {
+export function SiteFooter({ logoUrl, logoHeight }: { logoUrl?: string; logoHeight?: string }) {
+  const h = Math.min(160, Math.round(Math.min(120, Math.max(32, Number(logoHeight) || 64)) * 1.3));
   return (
     <footer className="mt-16 border-t border-black/5 bg-white">
       <div className="container py-12">
@@ -41,7 +42,7 @@ export function SiteFooter({ logoUrl }: { logoUrl?: string }) {
             <Link href="/" className="inline-flex items-center gap-2 font-display text-lg font-bold" aria-label={siteConfig.name}>
               {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoUrl} alt={siteConfig.name} className="h-14 w-auto" />
+                <img src={logoUrl} alt={siteConfig.name} style={{ height: h }} className="w-auto" />
               ) : (
                 <>
                   <span aria-hidden className="text-2xl">🧸</span>

@@ -8,11 +8,15 @@ export function SiteHeader({
   session,
   announcement,
   logoUrl,
+  logoHeight,
 }: {
   session: SessionPayload | null;
   announcement?: string;
   logoUrl?: string;
+  logoHeight?: string;
 }) {
+  // Header logo height in px, admin-controlled (default 64), clamped to a sane range.
+  const h = Math.min(120, Math.max(32, Number(logoHeight) || 64));
   return (
     <header className="sticky top-0 z-40 border-b border-black/5 bg-cream/90 backdrop-blur">
       {announcement && (
@@ -20,11 +24,11 @@ export function SiteHeader({
           {announcement}
         </div>
       )}
-      <div className="container flex h-16 items-center justify-between gap-4">
+      <div className="container flex min-h-[72px] items-center justify-between gap-4 py-2">
         <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold" aria-label={siteConfig.name}>
           {logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoUrl} alt={siteConfig.name} className="h-10 w-auto sm:h-12" />
+            <img src={logoUrl} alt={siteConfig.name} style={{ height: h }} className="w-auto" />
           ) : (
             <>
               <span aria-hidden className="text-2xl">🧸</span>
